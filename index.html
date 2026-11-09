@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="description" content="뉘앙스 — 번역, 단어공부, 회화까지. 외국어를 사용하면서 배우는 무료 학습 도구.">
+<title>뉘앙스 — 번역 · 단어공부 · 회화</title>
+<meta name="theme-color" content="#0E1118">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="뉘앙스.">
+
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E1118; --bg-2:#12151E;
+  --panel:#181D2A; --panel-2:#1C2231;
+  --line:#262D3E; --line-2:#333C52;
+  --ink:#F2F1EC; --mut:#9AA3B5; --faint:#626B80; --ghost:#454E63;
+  --white:#F7F6F1; --white-ink:#14171F;
+  --t-formal:#A9B6FF; --t-business:#7FD0FF; --t-standard:#8FE3C0; --t-native:#FFC98A; --t-casual:#FF9FB0; --t-slang:#C8F050;
+  --danger:#FF8B8B;
+  --r-lg:20px; --r-md:14px; --r-sm:10px;
+  --serif:'Pretendard Variable', Pretendard, -apple-system, 'Segoe UI', sans-serif;
+  --sans:'Pretendard Variable', Pretendard, -apple-system, 'Segoe UI', sans-serif;
+  --mono:'Pretendard Variable', Pretendard, -apple-system, 'Segoe UI', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  min-height:100vh;
+  background:radial-gradient(720px 380px at 50% -120px, rgba(169,182,255,.07), transparent 70%), radial-gradient(900px 560px at 88% 112%, rgba(143,227,192,.05), transparent 70%), var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(169,182,255,.28)}
+:focus-visible{outline:2px solid rgba(242,241,236,.45);outline-offset:2px;border-radius:4px}
+button{font-family:inherit;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+
+.wrap{max-width:720px;margin:0 auto;padding:0 20px 90px}
+
+/* ── top bar ─────────────────────────── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:26px 2px 22px}
+.brand{display:flex;align-items:baseline;gap:12px}
+.brand-name{font-family:var(--serif);font-weight:800;font-size:25px;letter-spacing:-.02em}
+.brand-name i{font-style:normal;color:var(--t-native)}
+.tagline{font-size:12.5px;color:var(--faint);letter-spacing:.01em}
+.icon-btn{
+  width:38px;height:38px;border-radius:var(--r-sm);
+  background:var(--panel);border:1px solid var(--line);color:var(--mut);
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:color .15s,border-color .15s,transform .15s;
+}
+.icon-btn:hover{color:var(--ink);border-color:var(--line-2);transform:translateY(-1px)}
+
+/* ── panels ──────────────────────────── */
+.panel{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);
+  box-shadow:0 14px 44px rgba(5,8,14,.4);
+}
+.compose{padding:20px 24px 18px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.panel-label{
+  font-family:var(--mono);font-size:10.5px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+}
+.chip{
+  font-family:var(--mono);font-size:11px;color:var(--mut);
+  background:rgba(255,255,255,.03);border:1px solid var(--line);
+  border-radius:999px;padding:3.5px 10px;white-space:nowrap;
+}
+.chip .flag{margin-right:4px}
+textarea#input{
+  width:100%;min-height:104px;resize:none;border:0;outline:none;background:none;
+  color:var(--ink);font-family:var(--serif);font-weight:500;font-size:20px;line-height:1.75;
+  padding:8px 0 4px;
+}
+textarea#input::placeholder{color:var(--ghost)}
+.compose-foot{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border-top:1px dashed var(--line);padding-top:14px;flex-wrap:wrap;
+}
+.count{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.compose-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.swap-btn{
+  width:36px;height:40px;border-radius:var(--r-sm);
+  background:none;border:1px solid var(--line);color:var(--mut);font-size:15px;
+  transition:color .15s,border-color .15s;
+}
+.swap-btn:hover{color:var(--ink);border-color:var(--line-2)}
+.lang-select{position:relative}
+.lang-select select{
+  appearance:none;-webkit-appearance:none;
+  background:var(--bg-2) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%239AA3B5' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>") no-repeat right 12px center;
+  color:var(--ink);border:1px solid var(--line-2);border-radius:var(--r-sm);
+  font-size:13.5px;font-family:var(--sans);padding:10px 32px 10px 13px;cursor:pointer;
+}
+.lang-select select:hover{border-color:var(--faint)}
+#topbar .lang-select select{padding:8px 30px 8px 12px;font-size:12.5px;font-weight:600}
+@media (max-width:640px){#topbar .lang-select{max-width:128px}#topbar .lang-select select{width:100%}}
+.btn-primary{
+  background:var(--white);color:var(--white-ink);border:0;border-radius:var(--r-sm);
+  font-weight:700;font-size:14px;padding:11px 22px;letter-spacing:.01em;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+  transition:transform .15s,background .15s;
+}
+.btn-primary:hover{transform:translateY(-1px);background:#fff}
+.btn-ghost{
+  background:none;border:1px solid var(--line-2);color:var(--mut);
+  border-radius:var(--r-sm);font-size:13px;font-weight:600;padding:10px 16px;
+  transition:color .15s,border-color .15s;
+}
+.btn-ghost:hover{color:var(--ink);border-color:var(--faint)}
+.btn-primary.sm,.btn-ghost.sm{padding:8px 14px;font-size:13px}
+
+/* ── result ──────────────────────────── */
+#resultSection{margin-top:16px}
+.translation{padding:22px 26px 20px}
+.tr-line{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tr-text{
+  font-family:var(--serif);font-weight:550;font-size:22px;line-height:1.8;word-break:keep-all;
+  margin:2px 0 4px;
+}
+.tr-actions{display:flex;gap:6px;margin-left:auto}
+.mini-btn{
+  width:30px;height:30px;border-radius:8px;border:1px solid var(--line);
+  background:none;color:var(--mut);font-size:13px;display:inline-flex;
+  align-items:center;justify-content:center;transition:color .15s,border-color .15s;
+}
+.mini-btn:hover{color:var(--ink);border-color:var(--line-2)}
+.mini-btn:disabled{opacity:.45;cursor:default}
+.tone-card.regen-busy .tone-text{opacity:.55}
+.pend-label{font-size:11px;color:#9aa3b5;white-space:nowrap}
+.tone-card.tone-pending .tone-skel{margin:10px 0 4px}
+.tone-card.tone-pending{opacity:.8}
+.pend-err{display:flex;align-items:center;gap:8px;padding:6px 2px 2px;font-size:12px;color:#9aa3b5}
+.pend-err .p-retry{flex-shrink:0}
+.dict{border-top:1px dashed var(--line);margin-top:16px;padding-top:14px;display:grid;gap:9px}
+.dict-row{display:flex;align-items:baseline;gap:10px;font-size:14px;flex-wrap:wrap}
+.dict-pos{
+  font-family:var(--mono);font-size:10.5px;color:var(--t-standard);
+  border:1px solid rgba(143,227,192,.35);border-radius:6px;padding:1.5px 7px;
+  flex:none;
+}
+.dict-terms{color:var(--ink);font-weight:600}
+.dict-rev{color:var(--faint);font-size:12.5px}
+.tr-pron{font-size:14px;color:var(--mut);margin:2px 0 4px}
+.tr-pron b{color:var(--t-native);font-weight:700;margin-right:6px;font-size:12.5px}
+.dict-hint{border-top:1px dashed var(--line);margin-top:16px;padding-top:12px;font-size:12.5px;color:var(--faint)}
+.gloss{border-top:1px dashed var(--line);margin-top:16px;padding-top:14px}
+.gloss-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.gloss-chip{display:inline-flex;align-items:baseline;gap:7px;max-width:100%;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:6px 11px}
+.gloss-chip>b{font-size:13.5px;font-weight:700;color:var(--t-formal);white-space:nowrap}
+.gloss-chip .m{font-size:13px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:230px}
+.gloss-chip.pending .m{color:var(--ghost)}
+.gloss-chip .p{font-size:11.5px;color:var(--t-native);white-space:nowrap;font-weight:600;flex:none}
+
+/* ── tones ───────────────────────────── */
+.tones{margin-top:26px}
+.tones-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}
+.tones-title{font-family:var(--serif);font-size:17px;font-weight:700}
+.tones-status{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.spectrum{display:flex;align-items:center;gap:10px;margin:10px 0 16px}
+.spectrum .rail{
+  flex:1;height:3px;border-radius:2px;opacity:.55;
+  background:linear-gradient(90deg,var(--t-formal),var(--t-business),var(--t-standard),var(--t-native),var(--t-casual),var(--t-slang));
+}
+.spectrum .cap{font-family:var(--mono);font-size:10.5px;color:var(--faint);flex:none}
+.tone-list{display:grid;gap:11px}
+
+.tone-card{
+  --tone:#fff;
+  position:relative;overflow:hidden;
+  background:color-mix(in srgb, var(--tone) 7%, var(--panel));
+  border:1px solid color-mix(in srgb, var(--tone) 26%, var(--line));
+  border-left:3px solid var(--tone);
+  border-radius:var(--r-md);
+  padding:16px 20px 15px 22px;
+  animation:rise .5s cubic-bezier(.2,.7,.3,1) both;
+  animation-delay:calc(var(--i) * 80ms);
+}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tone-head{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.tone-emoji{font-size:15px;flex:none}
+.tone-name{font-size:13.5px;font-weight:700;color:var(--tone);letter-spacing:.01em}
+.wave{display:flex;align-items:center;gap:3px;height:20px;margin-left:6px}
+.wave span{
+  width:3px;border-radius:2px;background:var(--tone);opacity:.75;
+  height:calc(var(--h) * 1px);
+  transform-origin:center;
+}
+.wave.playing span{animation:eq 1s ease-in-out infinite;animation-delay:calc(var(--d) * 1s)}
+@keyframes eq{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1.25)}}
+.tone-actions{margin-left:auto;display:flex;gap:6px}
+.tone-text{font-family:var(--serif);font-weight:500;font-size:19px;line-height:1.8;word-break:keep-all}
+.tone-note{margin-top:7px;font-size:13px;color:var(--mut)}
+.tone-pron{margin-top:8px;font-size:13.5px;color:var(--mut)}
+.tone-pron b{color:var(--t-native);font-weight:700;margin-right:6px;font-size:11.5px}
+.tone-words{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tone-words .gloss-chip{padding:4px 9px;border-radius:8px;background:color-mix(in srgb,var(--tone) 6%,var(--bg-2));border-color:color-mix(in srgb,var(--tone) 22%,var(--line))}
+.tone-words .gloss-chip>b{font-size:12.5px}
+.tone-words .gloss-chip .m{font-size:12px;max-width:150px}
+.tone-words .gloss-chip .p{font-size:11px}
+
+/* skeleton & progress */
+.tone-skel{
+  border:1px solid var(--line);border-radius:var(--r-md);
+  background:var(--panel);padding:18px 20px;display:grid;gap:10px;
+}
+.tone-skel .l{height:13px;border-radius:6px;background:linear-gradient(100deg,var(--line) 40%,var(--line-2) 50%,var(--line) 60%);background-size:220% 100%;animation:shimmer 1.4s linear infinite}
+.tone-skel .l.b{width:78%}.tone-skel .l.c{width:52%}
+@keyframes shimmer{to{background-position:-120% 0}}
+.tone-progress,.tone-error{
+  border:1px solid var(--line-2);border-radius:var(--r-md);
+  background:var(--panel);padding:18px 20px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.eq{display:flex;align-items:center;gap:3px;height:22px;flex:none}
+.eq span{width:4px;border-radius:2px;background:var(--t-native);height:100%;transform-origin:center;animation:eq 1.1s ease-in-out infinite}
+.eq span:nth-child(2){animation-delay:.15s}.eq span:nth-child(3){animation-delay:.3s}
+.eq span:nth-child(4){animation-delay:.45s}.eq span:nth-child(5){animation-delay:.6s}
+.prog-text{font-size:13.5px;color:var(--mut)}
+.prog-text b{color:var(--ink);font-weight:600}
+.prog-sec{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-left:2px}
+.tone-error{border-color:rgba(255,139,139,.4)}
+.err-title{font-size:14px;font-weight:700;color:var(--danger)}
+.err-sub{font-size:13px;color:var(--mut);flex:1;min-width:200px}
+.err-actions{display:flex;gap:8px;margin-left:auto}
+
+/* ── toast / modal ───────────────────── */
+#toast{
+  position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(16px);
+  background:#232A3B;color:var(--ink);border:1px solid var(--line-2);
+  font-size:13.5px;padding:11px 20px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;
+  box-shadow:0 12px 34px rgba(0,0,0,.5);z-index:60;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.veil{
+  position:fixed;inset:0;background:rgba(8,10,16,.66);backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;
+}
+.veil[hidden]{display:none}
+.modal{
+  width:min(420px,100%);background:var(--panel-2);
+  border:1px solid var(--line-2);border-radius:var(--r-lg);
+  padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.55);
+}
+.modal h3{font-family:var(--serif);font-size:19px;margin-bottom:14px}
+.opt{display:flex;align-items:center;gap:10px;padding:11px 2px;font-size:14px;cursor:pointer;border-bottom:1px solid var(--line)}
+.opt input{accent-color:var(--t-native);width:15px;height:15px}
+.opt small{color:var(--faint);margin-left:auto;font-size:11.5px;text-align:right}
+#geminiKey{
+  width:100%;margin-top:14px;background:var(--bg-2);border:1px solid var(--line-2);
+  border-radius:var(--r-sm);color:var(--ink);font-size:13px;font-family:var(--mono);
+  padding:11px 13px;outline:none;
+}
+#geminiKey:focus{border-color:var(--faint)}
+.hint{font-size:12px;color:var(--faint);margin-top:9px}
+.hint a{color:var(--t-business);text-decoration:none}
+.hint a:hover{text-decoration:underline}
+.modal-actions{display:flex;justify-content:flex-end;margin-top:18px;gap:8px}
+
+.foot{margin-top:34px;text-align:center;font-size:12px;color:var(--ghost);line-height:1.8}
+.foot .sep{margin:0 6px;opacity:.5}
+
+[hidden]{display:none!important}
+
+@media (max-width:600px){
+  .wrap{padding:0 14px 70px}
+  .tagline{display:none}
+  .compose{padding:16px 16px 14px}
+  textarea#input{font-size:18px;min-height:88px}
+  .tr-text{font-size:19.5px}
+  .tone-text{font-size:17.5px}
+  .tone-card{padding:14px 14px 13px 16px}
+  .compose-foot{flex-direction:column;align-items:stretch}
+  .compose-actions{justify-content:flex-end}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+.prog-text small{opacity:.6;font-size:12px;font-weight:400}
+.pick-label{font-size:12px;color:#9aa3b5;margin:14px 0 8px}
+.pick-label small{opacity:.75}
+.tone-pick{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 12px}
+.pick-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:transparent;color:#9aa3b5;font:inherit;font-size:13px;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.pick-btn .pe{font-size:14px;line-height:1}
+.pick-btn.on{border-color:var(--tone);color:var(--tone);background:rgba(255,255,255,.06);font-weight:600}
+
+/* ── 모드 라우터 / 홈 ─────────────────── */
+.brand{cursor:pointer}
+.brand:focus-visible{border-radius:6px}
+#topbar:not(.in-mode) #modeTabs{display:none}
+#topbar.in-mode .tagline{display:none}
+#topbar.in-mode .brand-name{font-size:21px}
+.tabs{display:flex;gap:6px;margin-left:auto}
+.navbtn{
+  font-size:13px;font-weight:600;color:var(--mut);
+  background:none;border:1px solid var(--line);border-radius:999px;
+  padding:8px 15px;transition:color .15s,border-color .15s,background .15s;
+}
+.navbtn:hover{color:var(--ink);border-color:var(--line-2)}
+.navbtn.on{background:var(--white);color:var(--white-ink);border-color:var(--white);font-weight:700}
+.hero{padding:34px 2px 6px}
+.hero-kicker{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t-native)}
+.hero h1{font-family:var(--serif);font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.35;margin:10px 0 8px}
+.hero p{color:var(--mut);font-size:14.5px;max-width:430px}
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:22px}
+.mode-card{
+  text-align:left;background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 18px 16px;
+  color:var(--ink);display:flex;flex-direction:column;gap:10px;min-height:200px;
+  box-shadow:0 14px 44px rgba(5,8,14,.35);
+  transition:transform .18s,border-color .18s,box-shadow .18s;
+}
+.mode-card:hover{transform:translateY(-3px);border-color:var(--line-2);box-shadow:0 20px 54px rgba(5,8,14,.5)}
+.mode-card .m-emoji{font-size:22px}
+.mode-card h2{font-family:var(--serif);font-size:18.5px;font-weight:700}
+.mode-card p{font-size:12.5px;color:var(--mut);line-height:1.65}
+.mode-go{margin-top:auto;font-size:12.5px;font-weight:700;color:var(--t-native)}
+.mv{margin-top:2px}
+.mini-rail{height:3px;border-radius:2px;opacity:.8;background:linear-gradient(90deg,var(--t-formal),var(--t-business),var(--t-standard),var(--t-native),var(--t-casual),var(--t-slang))}
+.mv-card{display:inline-flex;align-items:center;gap:8px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:10px;padding:7px 12px;font-size:12.5px}
+.mv-card b{color:var(--t-formal)}
+.mv-bub{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+.mv-bub span{font-size:11.5px;border-radius:10px;padding:4px 9px;background:var(--bg-2);border:1px solid var(--line)}
+.mv-bub span.me{align-self:flex-end;background:color-mix(in srgb,var(--t-native) 16%,var(--bg-2));border-color:color-mix(in srgb,var(--t-native) 30%,var(--line))}
+
+/* ── 단어공부 ────────────────────────── */
+.voc-add{display:flex;gap:8px;margin-top:6px}
+.voc-add input{flex:1;min-width:0;background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--r-sm);color:var(--ink);font-size:15px;font-family:var(--serif);padding:12px 14px;outline:none}
+.voc-add input:focus{border-color:var(--faint)}
+.voc-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 0}
+.voc-tools .spacer{flex:1}
+.voc-list{display:grid;gap:8px}
+.voc-row{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 16px}
+.voc-en{font-family:var(--serif);font-weight:600;font-size:16px;word-break:keep-all}
+.voc-ko{color:var(--mut);font-size:13.5px;word-break:keep-all}
+/* 플래시카드 */
+.fc-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--faint);font-family:var(--mono);margin:16px 2px 10px}
+.fc-scene{perspective:1200px}
+.fc-card{position:relative;height:210px;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.7,.3,1);cursor:pointer}
+.fc-card.flip{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-lg);border:1px solid var(--line-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center}
+.fc-front{background:linear-gradient(180deg,var(--panel-2),var(--panel))}
+.fc-back{background:color-mix(in srgb,var(--t-native) 10%,var(--panel));transform:rotateY(180deg);border-color:color-mix(in srgb,var(--t-native) 30%,var(--line))}
+.fc-word{font-family:var(--serif);font-weight:700;font-size:26px;line-height:1.5;word-break:keep-all}
+.fc-sub{font-size:12px;color:var(--faint)}
+.fc-actions{display:flex;gap:10px;margin-top:16px}
+.btn-again{background:none;border:1px solid rgba(255,139,139,.5);color:var(--danger);border-radius:var(--r-sm);font-weight:600;font-size:14px;padding:11px 18px}
+.btn-know{background:var(--white);color:var(--white-ink);border:0;border-radius:var(--r-sm);font-weight:700;font-size:14px;padding:11px 22px}
+/* 퀴즈 */
+.qz-q{font-size:13px;color:var(--mut);margin:6px 0 4px}
+.qz-word{font-family:var(--serif);font-weight:700;font-size:24px;margin:2px 0 16px;word-break:keep-all}
+.qz-opts{display:grid;gap:9px}
+.qz-opt{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-md);color:var(--ink);font-size:15px;font-family:var(--sans);padding:13px 16px;transition:border-color .15s,background .15s}
+.qz-opt:hover{border-color:var(--faint)}
+.qz-opt.ok{border-color:rgba(143,227,192,.65);background:color-mix(in srgb,var(--t-standard) 12%,var(--panel))}
+.qz-opt.bad{border-color:rgba(255,139,139,.6);background:color-mix(in srgb,var(--danger) 10%,var(--panel))}
+.qz-opt:disabled{opacity:1}
+.qz-done-num{font-family:var(--serif);font-size:34px;font-weight:800}
+/* ── 회화 ───────────────────────────── */
+.scen-grid{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0 4px}
+.scen-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--bg-2);color:var(--mut);font-size:13px;font-family:var(--sans);transition:color .15s,border-color .15s}
+.scen-btn:hover{color:var(--ink);border-color:var(--faint)}
+.scen-btn.on{color:var(--ink);border-color:var(--t-native);background:color-mix(in srgb,var(--t-native) 10%,var(--bg-2));font-weight:600}
+.conv-head{display:flex;align-items:center;gap:10px;margin:14px 0 4px}
+.conv-head b{font-family:var(--serif);font-size:16px}
+.conv-log{display:grid;gap:10px;padding:6px 2px}
+.bub{max-width:88%;border-radius:16px;padding:11px 15px;font-size:14.5px;line-height:1.65;word-break:keep-all}
+.bub.me{justify-self:end;background:color-mix(in srgb,var(--t-formal) 14%,var(--panel));border:1px solid color-mix(in srgb,var(--t-formal) 30%,var(--line));border-bottom-right-radius:6px}
+.bub.ai{justify-self:start;background:var(--panel);border:1px solid var(--line);border-bottom-left-radius:6px}
+.bub .fix{border-top:1px dashed var(--line);margin-top:8px;padding-top:7px;font-size:12.5px;color:var(--t-native)}
+.bub .rw{font-family:var(--serif);font-size:16px;font-weight:550}
+.bub .pron{margin-top:5px;font-size:12.5px;color:var(--t-native)}
+.bub .tr{margin-top:6px;font-size:12.5px;color:var(--mut)}
+.bub .rw-act{display:flex;gap:6px;margin-top:8px}
+.conv-status{font-size:12.5px;color:var(--faint);min-height:20px;padding:2px}
+.conv-bar{display:flex;gap:8px;align-items:flex-end;position:sticky;bottom:0;padding:10px 0 calc(4px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,var(--bg) 40%)}
+.conv-bar textarea{flex:1;background:var(--panel-2);border:1px solid var(--line-2);border-radius:14px;color:var(--ink);font-size:15px;font-family:var(--sans);padding:12px 14px;resize:none;outline:none;max-height:110px}
+.conv-bar textarea:focus{border-color:var(--faint)}
+@media (max-width:600px){
+  .navbtn{padding:7px 11px;font-size:12.5px}
+  .hero h1{font-size:24px}
+  .mode-grid{grid-template-columns:1fr}
+  .mode-card{min-height:0}
+  .fc-card{height:190px}
+  .bub{max-width:94%}
+}
+
+/* ─────────────── 모바일 최적화 (터치 타겟 · iOS 확대 방지 · 세이프에어리어) ─────────────── */
+@media (max-width:640px){
+  html{-webkit-tap-highlight-color:transparent}
+  body{overflow-x:clip}
+  button,a,.navbtn,.mini-btn,.pick-btn,.scen-btn,.qz-opt,.mode-card,.fc-card{touch-action:manipulation}
+  .wrap{padding:0 14px calc(80px + env(safe-area-inset-bottom))}
+  .topbar{flex-wrap:wrap;row-gap:10px;padding:18px 2px 14px}
+  .topbar .tagline{display:none}
+  #modeTabs{order:6;width:100%;justify-content:center}
+  .navbtn{padding:8px 13px;font-size:13px}
+  textarea#input,.voc-add input,.conv-bar textarea,.lang-select select{font-size:16px}
+  .mini-btn{min-width:38px;min-height:38px}
+  .pick-btn{padding:9px 13px}
+  .scen-btn{padding:11px 14px;font-size:13.5px}
+  .qz-opt{padding:14px 16px}
+  .voc-row{padding:12px 14px}
+  .tr-text,.voc-en,.voc-ko,.qz-word,.bub .fix,.bub .rw,.fc-word,.fc-sub{overflow-wrap:anywhere}
+  .hero{padding:26px 2px 4px}
+  .hero p{font-size:14px}
+  .conv-head{margin-top:8px}
+  .conv-bar{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .rw-act .mini-btn{min-width:36px;min-height:36px}
+  #toast{bottom:calc(24px + env(safe-area-inset-bottom))}
+  .modal{width:min(92%,430px);max-height:84vh;overflow:auto}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header class="topbar">
+  <div class="brand" id="brandHome" role="button" tabindex="0" title="처음 화면으로">
+    <span class="brand-name">뉘앙스<i>.</i></span>
+    <span class="tagline">같은 문장, 여섯 개의 목소리</span>
+  </div>
+  <nav class="tabs" id="modeTabs" aria-label="모드 이동">
+    <button class="navbtn" data-m="translate">번역</button>
+    <button class="navbtn" data-m="vocab">단어공부</button>
+    <button class="navbtn" data-m="conv">회화</button>
+  </nav>
+  <div class="lang-select" id="studyWrap" hidden><select id="studySel" aria-label="공부 언어"></select></div>
+  <button id="settingsBtn" class="icon-btn" title="설정" aria-label="설정">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+</header>
+
+<section class="screen" id="scr-home">
+  <div class="hero">
+    <div class="hero-kicker">번역 &#183; 단어 &#183; 회화</div>
+    <h1>외국어,<br>사용하는 만큼 배워요</h1>
+    <p>쓰고 싶은 문장은 바로 번역하고, 저장한 단어는 카드로 외우고, 배운 표현은 AI와 대화로 연습하세요. 전부 무료로 동작해요.</p>
+  </div>
+  <div class="mode-grid">
+    <div class="mode-card" data-go="translate" role="button" tabindex="0">
+      <span class="m-emoji">&#127760;</span>
+      <h2>번역기</h2>
+      <p>같은 문장을 여섯 가지 말투로. 격식 있는 표현부터 슬랭까지 한 번에 보여드려요.</p>
+      <div class="mv"><div class="mini-rail"></div></div>
+      <span class="mode-go">열기 &#8594;</span>
+    </div>
+    <div class="mode-card" data-go="vocab" role="button" tabindex="0">
+      <span class="m-emoji">&#128203;</span>
+      <h2>단어공부</h2>
+      <p>단어를 저장해 두고 플래시카드와 퀴즈로 반복 학습. 발음 듣기도 돼요.</p>
+      <div class="mv"><span class="mv-card"><b>Aa</b>&#8594; 가나다</span></div>
+      <span class="mode-go">열기 &#8594;</span>
+    </div>
+    <div class="mode-card" data-go="conv" role="button" tabindex="0">
+      <span class="m-emoji">&#128172;</span>
+      <h2>회화</h2>
+      <p>카페, 공항, 호텔&#8230; 상황을 골라 AI와 롤플레이 대화. 어색한 문장은 고쳐드려요.</p>
+      <div class="mv mv-bub"><span>Hello! What can I get you?</span><span class="me">I&#8217;d like a latte, please.</span></div>
+      <span class="mode-go">열기 &#8594;</span>
+    </div>
+  </div>
+</section>
+
+<div class="screen" id="scr-translate" hidden>
+<section class="panel compose">
+  <div class="panel-head">
+    <span class="panel-label">입력</span>
+    <span id="detectedChip" class="chip" aria-live="polite">자동 감지</span>
+  </div>
+  <textarea id="input" rows="3" placeholder="모국어로 편하게 쓰세요. 예) 내일 저녁에 시간 있어? 같이 밥 먹자!" spellcheck="false"></textarea>
+  <div class="pick-label">이런 말투로 보여드려요 <small>번역 전에 미리 고르세요 &#183; 나중에 추가하면 새 말투만 만들어요</small></div>
+  <div id="tonePick" class="tone-pick" role="group" aria-label="표시할 말투 선택"></div>
+  <div class="compose-foot">
+    <span id="charCount" class="count">0자</span>
+    <div class="compose-actions">
+      <button id="swapBtn" class="swap-btn" title="번역 결과를 다시 입력하고 방향 바꾸기">&#8646;</button>
+      <div class="lang-select"><select id="target" aria-label="대상 언어"></select></div>
+      <button id="translateBtn" class="btn-primary">번역</button>
+    </div>
+  </div>
+</section>
+
+<section id="resultSection" hidden>
+  <div class="panel translation">
+    <div class="tr-line">
+      <span class="panel-label">번역</span>
+      <span id="targetChip" class="chip"></span>
+      <div class="tr-actions">
+        <button id="trSpeak" class="mini-btn" title="발음 듣기">&#128266;</button>
+        <button id="trCopy" class="mini-btn" title="복사">&#10064;</button>
+      </div>
+    </div>
+    <p id="trText" class="tr-text" aria-live="polite"></p>
+    <p id="trPron" class="tr-pron" hidden></p>
+    <div id="dictCard" class="dict" hidden></div>
+    <p id="dictHint" class="dict-hint" hidden>단어 하나만 입력하면 품사&#183;여러 뜻&#183;역번역 사전 뜻이 나타나요 &#183; 문장은 아래 &#39;단어별 뜻&#39;으로 풀어드려요</p>
+    <div id="glossCard" class="gloss" hidden>
+      <p class="panel-label">단어별 뜻</p>
+      <div id="glossList" class="gloss-list"></div>
+    </div>
+  </div>
+
+  <div class="tones">
+    <div class="tones-head">
+      <span class="tones-title" id="tonesTitle">여섯 가지 말투</span>
+      <span id="toneStatus" class="tones-status">격식 &#8594; 친근순</span>
+    </div>
+    <div class="spectrum" aria-hidden="true">
+      <span class="cap">격식</span>
+      <span class="rail"></span>
+      <span class="cap">친근</span>
+    </div>
+    <div id="toneList" class="tone-list"></div>
+  </div>
+</section>
+</div>
+
+<section class="screen" id="scr-vocab" hidden>
+  <section class="panel compose">
+    <div class="panel-head">
+      <span class="panel-label">단어 추가</span>
+      <span id="vocCount" class="chip">0개 저장됨</span>
+    </div>
+    <div class="voc-add">
+      <input id="vocIn" placeholder="단어나 표현을 넣으세요. 예) 기분이 안 좋아 / Nice to meet you" spellcheck="false">
+      <button id="vocAddBtn" class="btn-primary">추가</button>
+    </div>
+    <p class="hint" style="margin-top:10px">위에서 고른 공부 언어와 한국어를 아무렇게나 넣으세요 — 방향은 자동으로 알아맞춰요. 발음은 &#128266; 버튼으로 들을 수 있어요.</p>
+    <div class="voc-tools">
+      <button id="vocPreset" class="btn-ghost sm">기초 여행 표현 불러오기</button>
+      <span class="spacer"></span>
+      <button id="vocCardBtn" class="btn-primary sm">&#9654; 카드 학습</button>
+      <button id="vocQuizBtn" class="btn-ghost sm">퀴즈</button>
+    </div>
+  </section>
+  <div id="vocStudy" hidden></div>
+  <div id="vocMain">
+    <div id="vocList" class="voc-list" style="margin-top:16px"></div>
+  </div>
+  <p id="vocEmpty" class="hint" style="margin-top:16px">저장한 단어가 여기에 모여요. 위에서 첫 단어를 추가해 보세요!</p>
+</section>
+
+<section class="screen" id="scr-conv" hidden>
+  <section class="panel compose" id="convSetup">
+    <div class="panel-head">
+      <span class="panel-label">대화 상황 고르기</span>
+      <span class="chip" id="convLangChip">영어 연습</span>
+    </div>
+    <div class="scen-grid" id="scenGrid"></div>
+    <div class="pick-label">내 실력에 맞춰 말해줘요</div>
+    <div class="scen-grid" id="lvlGrid"></div>
+    <div style="margin-top:14px"><button id="convStart" class="btn-primary">대화 시작하기</button></div>
+    <p class="hint" style="margin-top:12px">무료 서버는 대화 한 번에 45초 간격이에요 · <b>⚙ 설정</b>에서 Gemini 무료 키를 연결하면 기다림 없이 이어져요.</p>
+  </section>
+  <div id="convRoom" hidden>
+    <div class="conv-head">
+      <span id="convScene" style="font-size:18px"></span>
+      <b id="convSceneName"></b>
+      <span style="flex:1"></span>
+      <button id="convQuit" class="btn-ghost sm">그만하기</button>
+    </div>
+    <div id="convLog" class="conv-log"></div>
+    <div id="convStatus" class="conv-status" aria-live="polite"></div>
+    <div class="conv-bar">
+      <textarea id="convIn" rows="1" placeholder="외국어로 답해 보세요. 모르면 한국어로 써도 돼요 — 표현을 알려드려요" spellcheck="false"></textarea>
+      <button id="convSend" class="btn-primary">보내기</button>
+    </div>
+  </div>
+</section>
+
+<p class="foot">번역 &#183; 단어공부 &#183; 회화 — 전부 무료로 동작해요<span class="sep">&#183;</span>AI 생성이 느리면 <b>⚙ 설정</b>에서 Gemini 무료 키를 연결하세요</p>
+</div>
+
+<div id="toast" role="status"></div>
+
+<div id="veil" class="veil" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="설정">
+    <h3>AI 설정</h3>
+    <label class="opt"><input type="radio" name="prov" value="free"> 무료 AI <small>키 필요 없음</small></label>
+    <label class="opt"><input type="radio" name="prov" value="gemini"> Gemini <small>더 빠르고 안정</small></label>
+    <input id="geminiKey" type="password" placeholder="AIza... 로 시작하는 API 키" autocomplete="off">
+    <p class="hint">키는 이 브라우저에만 저장돼요 &#183; <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">무료 키 발급 &#8599;</a></p>
+    <div class="modal-actions">
+      <button id="veilClose" class="btn-ghost sm">닫기</button>
+      <button id="veilSave" class="btn-primary sm">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ─────────────── 데이터 ─────────────── */
+const LANGS=[
+ {c:'en',f:'🇺🇸',k:'영어',n:'English'},{c:'ja',f:'🇯🇵',k:'일본어',n:'Japanese'},
+ {c:'zh',f:'🇨🇳',k:'중국어(간체)',n:'Chinese (Simplified)'},{c:'zh-TW',f:'🇹🇼',k:'중국어(번체)',n:'Chinese (Traditional)'},
+ {c:'es',f:'🇪🇸',k:'스페인어',n:'Spanish'},{c:'fr',f:'🇫🇷',k:'프랑스어',n:'French'},
+ {c:'de',f:'🇩🇪',k:'독일어',n:'German'},{c:'it',f:'🇮🇹',k:'이탈리아어',n:'Italian'},
+ {c:'ru',f:'🇷🇺',k:'러시아어',n:'Russian'},{c:'pt',f:'🇧🇷',k:'포르투갈어',n:'Portuguese'},
+ {c:'ar',f:'🇸🇦',k:'아랍어',n:'Arabic'},{c:'hi',f:'🇮🇳',k:'힌디어',n:'Hindi'},
+ {c:'th',f:'🇹🇭',k:'태국어',n:'Thai'},{c:'vi',f:'🇻🇳',k:'베트남어',n:'Vietnamese'},
+ {c:'id',f:'🇮🇩',k:'인도네시아어',n:'Indonesian'},{c:'nl',f:'🇳🇱',k:'네덜란드어',n:'Dutch'},
+ {c:'pl',f:'🇵🇱',k:'폴란드어',n:'Polish'},{c:'tr',f:'🇹🇷',k:'터키어',n:'Turkish'},
+ {c:'ko',f:'🇰🇷',k:'한국어',n:'Korean'}
+];
+const langBy={}; LANGS.forEach(l=>langBy[l.c]=l);
+const POS_KO={noun:'명사',verb:'동사',adjective:'형용사',adverb:'부사',preposition:'전치사',conjunction:'접속사',pronoun:'대명사',interjection:'감탄사',numeral:'수사',particle:'조사',phrase:'구',sentence:'문장',abbreviation:'약어',suffix:'접미사',prefix:'접두사',name:'고유명사'};
+const TONES=[
+ {k:'formal',   e:'🎩', name:'격식 있는 표현', color:'#A9B6FF', bars:[13,17,13,17,13,17,13,17]},
+ {k:'business', e:'💼', name:'비즈니스 표현',  color:'#7FD0FF', bars:[9,13,9,13,9,13,9,13]},
+ {k:'standard', e:'📝', name:'표준 표현',      color:'#8FE3C0', bars:[11,7,14,8,12,7,15,8]},
+ {k:'native',   e:'🧑‍🤝‍🧑', name:'현지인 표현',  color:'#FFC98A', bars:[5,14,3,16,6,13,4,15]},
+ {k:'casual',   e:'👋', name:'친한 친구에게',  color:'#FF9FB0', bars:[3,10,2,12,3,9,2,11]},
+ {k:'slang',    e:'🔥', name:'슬랭 · 요즘 표현', color:'#C8F050', bars:[2,16,1,18,3,15,1,17]}
+];
+const RTL=['ar','he','fa','ur'];
+function isSingleWord(){const s=els&&els.input?els.input.value.trim():'';return !!s&&s.split(/\s+/).length===1&&s.length<=20;}
+function buildSYS(keys){
+ const single=isSingleWord(),koT=els.target.value==='ko';
+ const shape=keys.map(k=>koT?`"${k}":{"text":"<variant in TARGET>"}`:`"${k}":{"text":"<variant in TARGET>","pron":"<that variant read aloud in easy Korean hangul, max 60 chars>"}`).join(',');
+ const head=koT?`{"tones":{${shape}}}`:`{"pron":"<BASE sentence read aloud in easy Korean hangul>","tones":{${shape}}}`;
+ const singleRule=single?` SOURCE is a SINGLE WORD, so each tone "text" must ALSO be one word or a very short phrase (max 4 words) in TARGET — a register-matched variant of that same word, NEVER a full sentence (e.g. SOURCE "안녕하세요" BASE "Hello" gives casual "Hi", formal "Greetings", slang "yo"). Vary the WORD CHOICE per register, not sentence structure.`:' Vary sentence structure across variants.';
+ const pronRule=koT?' TARGET is Korean, so OMIT every "pron" field including the top-level one — output only the tone "text" values.':'Hangul "pron" values: write how the sentence SOUNDS to a Korean reader. PUT A SPACE BETWEEN EVERY WORD (for "Thank you for your help" write "땡 큐 포 유어 헬프", for "This is" write "디스 이즈") — spaces go BETWEEN words only, NEVER inside one word (write "Hello" as "헬로우", not "헬 로 우"), and never glue a whole sentence into one unspaced run. Hangul letters ONLY (no Latin letters, no IPA), max 60 chars each.';
+ return `You are a register-variant & pronunciation engine. INPUT gives SOURCE, BASE, TARGET. Return ONLY one valid JSON object on a single line (no markdown, no extra text), shaped exactly:
+${head}
+Tones: formal=very polite for formal occasions/elders; business=professional workplace tone; standard=neutral standard written style; native=how locals actually say it, colloquial; casual=spoken to a close friend, relaxed; slang=trendy Gen-Z internet texting, playful but never vulgar.
+Rules: all ${keys.length} tone keys required.${singleRule} Tone "text" values MUST be written in TARGET language only, NEVER in the SOURCE language. Do NOT add "gloss", "words" or "note" fields. ${pronRule} Complete the whole object.`;
+}
+/* 2차 폴백용 경량 프롬프트 — 메가 호출이 잘리거나 실패하면 말투 6종만 요청해 성공률 확보 */
+function buildMINI(keys){
+ return `You are a register-adaptation engine for translators.
+ Given SOURCE (original sentence), BASE (plain translation) and TARGET (language name), produce ${keys.length} register variants of the sentence in TARGET language${isSingleWord()?' as ONE word or a very short phrase (max 4 words) — SOURCE is a single word, so NEVER answer with a full sentence':''}:
+formal = very polite, for formal occasions/elders; business = professional workplace email/meeting tone; standard = neutral standard written style; native = how locals actually say it, colloquial and idiomatic; casual = spoken to a close friend, relaxed; slang = heavy Gen-Z / internet slang of the TARGET language, the way young people text on social media (abbreviations, trendy words), playful but never vulgar, offensive or dated.
+Each value must be {"text": "<variant sentence>", "pron": "<variant read aloud in easy Korean hangul, Hangul letters only, max 60 chars>", "note": "<one short nuance note in Korean, max 35 chars>"}.
+Vary sentence structure across variants, not just politeness particles. Use natural, correct TARGET language. All keys (${keys.join(', ')}) are required.
+Respond with ONLY a minified JSON object with keys ${keys.join(', ')}. No markdown, no extra text.`;
+}
+let megaMode=true;
+/* 말투 다중 선택 — 선택한 것만 요청해 출력이 짧아지고 속도·성공률이 올라감 */
+const SEL_KEY='nuance_tones_sel',PICK_SHORT={formal:'격식',business:'비즈니스',standard:'표준',native:'현지인',casual:'친구',slang:'슬랭'};
+let toneSel=(()=>{try{const a=JSON.parse(localStorage.getItem(SEL_KEY)||'null');
+ if(Array.isArray(a)){const v=a.filter(k=>TONES.some(t=>t.k===k));if(v.length)return v}}catch(e){}
+ return TONES.map(t=>t.k)})();
+let reqKeys=toneSel.slice();
+function renderTonePick(){
+ const box=$('tonePick');
+ box.innerHTML=TONES.map(t=>`<button type="button" class="pick-btn${toneSel.includes(t.k)?' on':''}" data-k="${t.k}" style="--tone:${t.color}"><span class="pe">${t.e}</span>${PICK_SHORT[t.k]}</button>`).join('');
+ const tt=$('tonesTitle');if(tt)tt.textContent='선택한 말투 '+toneSel.length+'개';
+ box.querySelectorAll('.pick-btn').forEach(b=>b.onclick=()=>{
+  const k=b.dataset.k;
+  if(toneSel.includes(k)){
+   if(toneSel.length===1){toast('최소 한 개는 선택하세요');return}
+   toneSel=toneSel.filter(x=>x!==k);
+  }else toneSel=TONES.map(t=>t.k).filter(x=>toneSel.includes(x)||x===k);
+  try{localStorage.setItem(SEL_KEY,JSON.stringify(toneSel))}catch(e){}
+  renderTonePick();
+  if(lastTr)genTones();
+ });
+}
+
+/* ─────────────── 상태 ─────────────── */
+const $=id=>document.getElementById(id);
+const els={input:$('input'),target:$('target'),chip:$('detectedChip'),count:$('charCount'),
+ result:$('resultSection'),trText:$('trText'),targetChip:$('targetChip'),dict:$('dictCard'),
+ list:$('toneList'),status:$('toneStatus'),toast:$('toast'),veil:$('veil'),key:$('geminiKey'),
+ pron:$('trPron'),hint:$('dictHint'),gloss:$('glossCard'),glossList:$('glossList')};
+let settings={provider:'free',geminiKey:''};
+try{const s=JSON.parse(localStorage.getItem('nuance_settings')||'{}');if(s.provider||s.geminiKey)settings={...settings,...s};}catch(e){}
+let lastTr='',lastSrc='',lastTranslit='',trToneRun=0,abort=null,timer=null,pronShown=false;
+
+/* ─────────────── 언어 감지(클라이언트) ─────────────── */
+function quickDetect(s){
+ if(!s.trim())return null;
+ if(/[가-힣]/.test(s))return'ko';
+ if(/[ぁ-ゖァ-ヺー]/.test(s))return'ja';
+ if(/[\u4E00-\u9FFF\uF900-\uFAFF]/.test(s))return'zh';
+ if(/[\u0400-\u04FF]/.test(s))return'ru';
+ if(/[\u0600-\u06FF]/.test(s))return'ar';
+ if(/[\u0900-\u097F]/.test(s))return'hi';
+ if(/[\u0E00-\u0E7F]/.test(s))return'th';
+ if(/[\u0590-\u05FF]/.test(s))return'he';
+ const t=s.toLowerCase();
+ const ks={en:[' the ',' and ',' you ',' ing ','ed '],es:[' que ',' de ',' la ',' el ','ñ','¿','¡ '],fr:[' le ',' les ',' des ',' vous ','ê','ç','è'],de:[' der ',' die ',' und ',' nicht ','ä','ö','ü','ß'],it:[' che ',' sono ',' della ','è'],pt:[' você ',' não ',' ção ','ã'],nl:[' het ',' een ',' van ',' ij '],pl:[' nie ',' się ',' ą','ę','ł'],tr:[' bir ',' değil ',' ığ','ş','ğ'],vi:[' không ',' là ',' ơ','ư','đ'],id:[' yang ',' saya ',' tidak ']};
+ let best='en',bs=0;
+ for(const[c,arr]of Object.entries(ks)){let sc=0;for(const w of arr)if(t.includes(w))sc++;if(sc>bs){bs=sc;best=c}}
+ return bs?best:'en';
+}
+function langChip(code){
+ const l=langBy[code];
+ return l?`<span class="flag">${l.f}</span>${l.k} · ${code.toUpperCase()}`:code?`${code.toUpperCase()}`:'—';
+}
+
+/* ─────────────── 유틸 ─────────────── */
+function toast(msg){els.toast.textContent=msg;els.toast.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>els.toast.classList.remove('show'),1800)}
+function getJSON(url,ms=12000){
+ const c=new AbortController();const t=setTimeout(()=>c.abort(),ms);
+ return fetch(url,{signal:c.signal}).then(r=>{clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()});
+}
+function extractJSON(s){
+ const m=String(s).replace(/```json|```/g,'').match(/\{[\s\S]*\}/);
+ if(!m)throw new Error('no-json');
+ return JSON.parse(m[0]);
+}
+function isRTL(c){return RTL.includes((c||'').split('-')[0])}
+
+/* ─────────────── 번역 체인 ─────────────── */
+async function chainTranslate(text,tl){
+ const enc=encodeURIComponent(text);const errs=[];
+ const tryEndpoints=[
+  ()=>getJSON(`https://clients5.google.com/translate_a/single?client=dict-chrome-ex&sl=auto&tl=${tl}&dt=t&dt=bd&dt=rm&dj=1&q=${enc}`)
+       .then(d=>{const sent=d.sentences||[];const tr=sent.map(x=>x.trans||'').join('');if(!tr)throw new Error('empty');
+         const rm=sent.map(x=>x.translit||x.romanization||'').join('');
+         return{trans:tr,src:d.src||(d.ld_result&&d.ld_result.srclangs&&d.ld_result.srclangs[0])||quickDetect(text),dict:d.dict||null,translit:rm||null}}),
+  ()=>getJSON(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${tl}&dt=t&dt=bd&dt=rm&dj=1&q=${enc}`)
+       .then(d=>{const sent=d.sentences||[];const tr=sent.map(x=>x.trans||'').join('');if(!tr)throw new Error('empty');
+         const rm=sent.map(x=>x.translit||x.romanization||'').join('');
+         return{trans:tr,src:d.src||quickDetect(text),dict:d.dict||null,translit:rm||null}}),
+  ()=>getJSON(`https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=auto&tl=${tl}&q=${enc}`)
+       .then(d=>{let tr=null,src=null;
+         if(Array.isArray(d)){if(typeof d[0]==='string'){tr=d[0];src=d[1]}
+          else if(Array.isArray(d[0])){if(typeof d[0][0]==='string'){tr=d[0][0];src=d[2]||d[1]||(typeof d[0][1]==='string'?d[0][1]:null)}
+          else if(Array.isArray(d[0][0])){tr=d[0][0][0];src=d[2]||d[1]}}}
+         if(!tr)throw new Error('empty');return{trans:tr,src:src||quickDetect(text),dict:null,translit:null}}),
+  ()=>getJSON(`https://api.mymemory.translated.net/get?q=${enc}&langpair=${quickDetect(text)||'en'}|${tl.split('-')[0]}`)
+       .then(d=>{const t=d&&d.responseData&&d.responseData.translatedText;
+         if(!t||/MYMEMORY WARNING/i.test(t))throw new Error('quota');
+         return{trans:t,src:quickDetect(text),dict:null,translit:null}})
+ ];
+ for(const ep of tryEndpoints){
+  try{return await ep()}catch(e){errs.push(e.message)}
+ }
+ throw new Error('translate-failed: '+errs.join(' | '));
+}
+async function fetchDictOnly(text,tl){
+ const d=await getJSON(`https://clients5.google.com/translate_a/single?client=dict-chrome-ex&sl=auto&tl=${tl}&dt=t&dt=bd&dt=rm&dj=1&q=${encodeURIComponent(text)}`,10000);
+ return{dict:d.dict||null,trans:(d.sentences||[]).map(x=>x.trans||'').join('')||null,
+  translit:(d.sentences||[]).map(x=>x.translit||'').join('')||null};
+}
+
+/* ─────────────── 말투 생성 (3중 폴백 + 타임아웃) ─────────────── */
+function userPrompt(){
+ const tl=langBy[els.target.value]||langBy.en;
+ return `SOURCE: ${els.input.value.trim()}\nBASE: ${lastTr}\nTARGET: ${tl.n}`;
+}
+async function fetchGemini(sig){
+ if(!settings.geminiKey)throw new Error('no-key');
+ const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(settings.geminiKey)}`,{
+  method:'POST',signal:sig,headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({contents:[{parts:[{text:(megaMode?buildSYS(reqKeys):buildMINI(reqKeys))+'\n\n'+userPrompt()}]}],
+   generationConfig:{temperature:.85,responseMimeType:'application/json'}})});
+ if(!r.ok)throw new Error('gemini HTTP '+r.status);
+ const d=await r.json();
+ return extractJSON(d.candidates[0].content.parts[0].text);
+}
+let livePartial=null; /* 스트리밍 중 부분 결과를 그려주는 콜백 — genTones가 설정 */
+async function pollSSE(r,onChunk){
+ const rd=r.body.getReader(),dec=new TextDecoder();
+ let buf='',full='',allRaw='';
+ const handle=line=>{
+  line=line.trim();
+  if(!line.startsWith('data:'))return;
+  const data=line.slice(5).trim();
+  if(data==='[DONE]')return;
+  try{const j=JSON.parse(data);const ch=(j.choices||[])[0]||{};
+   const dc=(ch.delta&&ch.delta.content)||(ch.message&&ch.message.content)||ch.text||'';
+   if(dc){full+=dc;if(onChunk)onChunk(full)}
+  }catch(e){}
+ };
+ for(;;){
+  const {value,done}=await rd.read();
+  if(done)break;
+  const t=dec.decode(value,{stream:true});
+  buf+=t;allRaw+=t;
+  let ix;
+  while((ix=buf.indexOf('\n'))>=0){handle(buf.slice(0,ix));buf=buf.slice(ix+1)}
+ }
+ handle(buf);
+ return{full,allRaw};
+}
+async function fetchPollPost(sig,model){
+ const mega=megaMode;
+ const body={model,referrer:'nuance-translator',temperature:.7,stream:true,max_tokens:mega?Math.min(2400,900+reqKeys.length*220):1200,
+  messages:[{role:'system',content:mega?buildSYS(reqKeys):buildMINI(reqKeys)},{role:'user',content:userPrompt()}]};
+ if(mega){body.reasoning_effort='low';body.response_format={type:'json_object'};}
+ markAIFire();
+ const r=await fetch('https://text.pollinations.ai/openai',{method:'POST',signal:sig,
+  headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ if(!r.ok){
+  let msg='poll POST '+model+' HTTP '+r.status;
+  try{const b=await r.text();const mm=/retry after (\d+)/i.exec(b);
+   if(r.status===402&&mm)msg='FREE_LIMIT:'+mm[1];}catch(e){}
+  throw new Error(msg);
+ }
+ if(!r.body||!r.body.getReader){
+  const d=await r.json();
+  return extractJSON(d.choices[0].message.content);
+ }
+ const {full,allRaw}=await pollSSE(r,livePartial);
+ if(!String(full).trim()){
+  try{const j=JSON.parse(allRaw);const ch=(j.choices||[])[0]||{};
+   const c=(ch.message&&ch.message.content)||ch.text||'';
+   if(c)return extractJSON(c);}catch(e){}
+  throw new Error('empty-stream');
+ }
+ return extractJSON(full);
+}
+function normalizeMega(raw,base,keys){
+ if(!raw||typeof raw!=='object')throw new Error('bad-shape');
+ const t=raw.tones&&typeof raw.tones==='object'?raw.tones:raw;
+ const out={};let n=0;
+ for(const k of keys){
+  const v=t[k];
+  const text=v?(typeof v.text==='string'?v.text.trim():(typeof v==='string'?v.trim():'')):'';
+  if(!text)continue;
+   if(els.target.value!=='ko'&&text.replace(/[^가-힣]/g,'').length*2>text.length)continue;
+  n++;
+  out[k]={text,note:v&&v.note?String(v.note).trim().slice(0,60):'',pron:String((v&&v.pron)||'').trim().slice(0,120),
+   words:Array.isArray(v&&v.words)?v.words.slice(0,8).map(x=>({w:String((x&&x.w)||'').trim(),m:String((x&&x.m)||'').trim(),p:String((x&&x.p)||'').trim()})).filter(x=>x.w&&x.m):[]};
+ }
+ if(n<(keys.length===1?1:Math.max(2,Math.ceil(keys.length*0.6))))throw new Error('bad-shape');
+ for(const k of keys)if(!out[k])out[k]={text:base||'',note:'표준 표현과 동일해요',pron:'',words:[]};
+ const gloss=Array.isArray(raw.gloss)?raw.gloss.slice(0,12).map(x=>{
+   let m=String((x&&x.m)||'').trim();const parts=m.split(/[,/\u00B7]/).map(t=>t.trim()).filter(Boolean);
+   if(parts.length>1){const hay=String(base||'').toLowerCase();m=parts.find(pt=>hay.includes(pt.toLowerCase()))||parts[0];}
+   return{w:String((x&&x.w)||'').trim(),m,p:String((x&&x.p)||'').trim()}}).filter(x=>x.w&&x.m):null;
+  for(const k of keys){const o=out[k];if(o.pron&&(!/[가-힣]/.test(o.pron)||(o.pron.length>=8&&!/\s/.test(o.pron))))o.pron='';}
+  let pron=String(raw.pron||'').trim().slice(0,150)||null;if(pron&&(!/[가-힣]/.test(pron)||(pron.length>=8&&!/\s/.test(pron))))pron=null;
+ return{tones:out,gloss:gloss&&gloss.length>=2?gloss:null,pron};
+}
+/* 스트리밍 조각 파싱 — JSON이 다 완성되기 전에도 닫힌 말투 객체만 골라 바로 렌더링 */
+const TONE_OBJ_RE=/"(formal|business|standard|native|casual|slang)"\s*:\s*\{\s*"text"\s*:\s*"((?:[^"\\]|\\.)*)"(?:\s*,\s*"pron"\s*:\s*"((?:[^"\\]|\\.)*)")?\s*\}/g;
+function unq(s){try{return JSON.parse('"'+s+'"')}catch(e){return s}}
+function partialTones(buf){
+ const out={};let m;TONE_OBJ_RE.lastIndex=0;
+ while((m=TONE_OBJ_RE.exec(buf)))out[m[1]]={text:unq(m[2]),pron:m[3]?unq(m[3]):''};
+ return out;
+}
+function partialBasePron(buf){
+ const ti=buf.indexOf('"tones"');
+ const re=/"pron"\s*:\s*"((?:[^"\\]|\\.)*)"/g;let m;
+ while((m=re.exec(buf))){
+  if(ti<0||m.index<ti){const p=unq(m[1]).trim();
+   return p&&/[가-힣]/.test(p)&&!(p.length>=8&&!/\s/.test(p))?p:null;}
+  break;
+ }
+ return null;
+}
+function startTimer(label){
+ let s=0;const L=label||'생성 중';$('toneStatus').textContent=L+' · 0초';
+ clearInterval(timer);
+ timer=setInterval(()=>{s++;$('toneStatus').textContent=`${L} · ${s}초`},1000);
+}
+/* 발음 표기 전용 고속 호출 — translit 없는 언어를 AI 한글 발음으로 커버 (GET 경로는 예산 소진으로 POST만 사용) */
+async function ensurePron(base,run,ckey){
+ if(!base||els.target.value==='ko'||pronShown)return;
+ try{
+  const tl=langBy[els.target.value]||langBy.en;
+  const c=new AbortController();toneCtrls.push(c);
+   const t=setTimeout(()=>c.abort(),18000);
+   markAIFire();
+   const r=await fetch('https://text.pollinations.ai/openai',{method:'POST',signal:c.signal,
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({model:'openai-fast',referrer:'nuance-translator',max_tokens:300,
+    messages:[{role:'user',content:`Read this ${tl.n} sentence aloud for Korean speakers. Reply with ONLY an easy Korean Hangul transcription of how it sounds, nothing else. Put a space between the words (for "Thank you for your help" write "땡 큐 포 유어 헬프"), never glue them together.\nSentence: ${base}`}]})});
+  clearTimeout(t);
+  if(!r.ok)return;
+  const d=await r.json();
+  const s=String((((d.choices||[])[0]||{}).message||{}).content||'').trim().split('\n')[0].replace(/^["'`]+|["'`]+$/g,'').slice(0,150);
+  if(!s||s.length>180||!/[가-힣]/.test(s)||run!==trToneRun)return;
+  renderPron(s);
+  if(ckey){try{const cc=loadToneCache();if(cc[ckey]&&!cc[ckey].pron){cc[ckey].pron=s;cc[ckey].ts=Date.now();localStorage.setItem(TONE_CACHE_KEY,JSON.stringify(cc))}}catch(e){}}
+ }catch(e){}
+}
+const TONE_CACHE_KEY='nuance_tone_cache';
+function loadToneCache(){try{return JSON.parse(localStorage.getItem(TONE_CACHE_KEY)||'{}')}catch(e){return{}}}
+function saveToneCache(key,val){
+ try{const c=loadToneCache();c[key]=val;c[key].ts=Date.now();
+  const ks=Object.keys(c).sort((a,b)=>(c[a].ts||0)-(c[b].ts||0));
+  while(ks.length>24)delete c[ks.shift()];
+  localStorage.setItem(TONE_CACHE_KEY,JSON.stringify(c));}catch(e){}
+}
+let toneCtrls=[],curCkey=null,lastAIFire=0;try{lastAIFire=+(localStorage.getItem('nuance_lastai')||0)}catch(e){}
+/* 무료 서버는 IP당 45초 1회 — 마지막 호출 시각을 저장해 쿨다운을 클라이언트에서 미리 계산한다 */
+function markAIFire(){lastAIFire=Date.now();try{localStorage.setItem('nuance_lastai',String(lastAIFire))}catch(e){}}
+function aiCooldownSec(){return settings.geminiKey?0:Math.ceil((lastAIFire+46000-Date.now())/1000)}
+function killToneReqs(){toneCtrls.forEach(c=>{try{c.abort()}catch(e){}});toneCtrls=[];}
+async function raceProvider(fn,model,ms,delay){
+ return new Promise((res,rej)=>{
+  const c=new AbortController();toneCtrls.push(c);
+  const to=setTimeout(()=>{c.abort();rej(new Error('timeout'))},(delay||0)+ms);
+  setTimeout(()=>{fn(c.signal,model).then(v=>{clearTimeout(to);res(v)}).catch(e=>{clearTimeout(to);rej(e)})},delay||0);
+ });
+}
+async function genTones(){
+ const run=++trToneRun;
+ killToneReqs();
+ megaMode=true;
+ const src=els.input.value.trim(),tl=els.target.value,ckey=tl+'||'+src;
+ curCkey=ckey;
+ const store=loadToneCache();
+ let ent=store[ckey];
+ if(ent&&ent.v!==6)ent=null;
+ const tones=(ent&&ent.tones)||{};
+ const have=toneSel.filter(k=>tones[k]&&tones[k].text);
+ const miss=toneSel.filter(k=>!(tones[k]&&tones[k].text));
+ const hadPron=!!(ent&&ent.pron),hadGloss=!!(ent&&ent.gloss);
+ if(have.length){
+  renderTones(tones,(ent&&ent.pron)||null,miss);
+  if(ent&&ent.gloss)applyGlossPron(ent.gloss,tl);
+  if((!ent||!ent.pron)&&!lastTranslit)ensurePron(lastTr,run,ckey);
+  if(!miss.length)els.status.textContent='캐시 · 즉시';
+ }
+ if(!miss.length)return;
+ reqKeys=miss.slice();
+ /* 쿨다운 중이면 실패할 요청을 보내지 않고 창이 닫히는 시점에 딱 한 번만 요청한다 */
+ const cd=aiCooldownSec();
+ if(cd>0&&cd<180){
+  startTimer('서버 쿨다운');
+  await new Promise(r=>setTimeout(r,cd*1000));
+  if(run!==trToneRun)return;
+ }
+ startTimer('새 말투 생성');
+ if(!have.length){
+  els.list.innerHTML=`<div class="tone-progress"><div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="prog-text"><b>AI가 말투 ${miss.length}개·발음</b>을 만들고 있어요 <small>${miss.length<TONES.length?'선택한 것만 만들어 더 빨라요':'완성되는 대로 하나씩 보여요'}</small></div><span class="prog-sec" id="progSec"></span>
+   <button class="btn-ghost sm" id="cancelTones">그만두기</button></div>`;
+  $('cancelTones').onclick=()=>{trToneRun++;killToneReqs();clearInterval(timer);els.status.textContent='취소됨';els.list.innerHTML='';};
+ }
+ /* 스트리밍 — 문장 조각이 도착하는 대로 카드를 하나씩 완성해 보여준다 */
+ const seenK=new Set(),doneK=new Set();let pronDone=false;
+ livePartial=buf=>{
+  if(run!==trToneRun)return;
+  if(!pronDone&&!hadPron){const p=partialBasePron(buf);if(p){pronDone=true;renderPron(p);}}
+  const pt=partialTones(buf);
+  for(const k of Object.keys(pt)){
+   if(seenK.has(k))continue;seenK.add(k);
+   if(!miss.includes(k))continue;
+   const t=TONES.find(x=>x.k===k);if(!t)continue;
+   let v;try{v=normalizeMega({tones:{[k]:pt[k]}},lastTr,[k]).tones[k]}catch(e){continue}
+   if(!v||!v.text)continue;
+   doneK.add(k);
+   const prog=els.list.querySelector('.tone-progress');if(prog)prog.remove();
+   const pen=els.list.querySelector('.tone-pending[data-k="'+k+'"]');
+   if(pen){pen.replaceWith(buildToneCard(t,v,toneSel.indexOf(k)));continue}
+   if(els.list.querySelector('.tone-card[data-k="'+k+'"]'))continue;
+   const card=buildToneCard(t,v,toneSel.indexOf(k));
+   const idx=TONES.indexOf(t);let ref=null;
+   for(const c of els.list.querySelectorAll('.tone-card')){const ci=TONES.findIndex(x=>x.k===c.dataset.k);if(ci>idx){ref=c;break}}
+   if(ref)els.list.insertBefore(card,ref);else els.list.appendChild(card);
+   els.status.textContent='말투를 만들고 있어요 · 완성되는 대로 표시';
+  }
+ };
+ /* 무료 등급은 IP당 45초에 1회 응답 한도 — 동시 경주 대신 대표 1경로 + Gemini(키 있을 때) 병행 */
+ const providers=[];
+ if(settings.geminiKey)providers.push([fetchGemini,'gemini',25000,0]);
+ providers.push([fetchPollPost,'openai-fast',55000,0]);
+ let round=0,lastErr=null;
+ while(round<2){
+  try{
+   const raw=await Promise.any(providers.map(([fn,m,ms,d])=>raceProvider(fn,m,ms,d)));
+   if(run!==trToneRun)return;
+   const mega=normalizeMega(raw,lastTr,reqKeys);
+   const st=loadToneCache();
+   const e2=st[ckey]&&st[ckey].tones?st[ckey]:{v:6,tones:{}};
+   e2.v=6;e2.tones=Object.assign({},e2.tones,mega.tones);
+   if(!e2.pron&&mega.pron)e2.pron=mega.pron;
+   if(!e2.gloss&&mega.gloss)e2.gloss=mega.gloss;
+   e2.ts=Date.now();
+   saveToneCache(ckey,e2);
+   if(run!==trToneRun)return;
+   clearInterval(timer);
+   if(!hadPron&&e2.pron)renderPron(e2.pron);
+   if(!hadGloss&&e2.gloss)applyGlossPron(e2.gloss,tl);
+   if(!e2.pron&&!lastTranslit)ensurePron(lastTr,run,ckey);
+   livePartial=null;
+   if(have.length){
+    /* 기존 카드는 그대로 — 대기 카드만 새 결과로 교체 */
+    els.list.querySelectorAll('.tone-pending').forEach(n=>{
+     const t=TONES.find(x=>x.k===n.dataset.k),v=e2.tones[t.k];
+     if(v&&v.text)n.replaceWith(buildToneCard(t,v,parseInt(n.dataset.i,10)||0));
+     else n.remove();
+    });
+    els.status.textContent='새 말투 추가 완성';
+   }else if(doneK.size>=miss.length){
+    els.status.textContent=`${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})} 완성`;
+   }else renderTones(e2.tones,e2.pron||null,[]);
+   return;
+  }catch(e){
+   lastErr=e;round++;
+   if(run!==trToneRun)return;
+   const mm=/FREE_LIMIT:(\d+)/.exec(String((e&&e.message)||'')+'|'+((e&&e.errors)||[]).map(x=>x&&x.message).join('|'));
+   const wait=mm?Math.min(parseInt(mm[1])+3,90):0;
+   if(round<2){
+    els.status.textContent=wait?`서버가 바빠요 · ${wait}초 후 자동 재시도`:'재시도 중…';
+    await new Promise(r=>setTimeout(r,(wait||1.2)*1000));
+    if(run!==trToneRun)return;
+    megaMode=false;
+    providers.length=0;
+    if(settings.geminiKey)providers.push([fetchGemini,'gemini',25000,0]);
+    providers.push([fetchPollPost,'openai-fast',55000,0]);
+    startTimer('재시도');
+   }
+  }
+ }
+ if(run!==trToneRun)return;
+ clearInterval(timer);
+ killToneReqs();
+ livePartial=null;
+ if(have.length){
+  els.status.textContent='새 말투 실패';
+  els.list.querySelectorAll('.tone-pending').forEach(n=>{
+   const t=TONES.find(x=>x.k===n.dataset.k);
+   n.innerHTML=`<div class="tone-head"><span class="tone-emoji">${t.e}</span><span class="tone-name">${t.name}</span></div><div class="pend-err">이 말투만 만들지 못했어요<button class="btn-ghost sm p-retry">다시 시도</button></div>`;
+   n.querySelector('.p-retry').onclick=genTones;
+  });
+ }else renderError(lastErr);
+}
+function renderError(lastErr){
+ els.status.textContent='실패';
+ const msg=(lastErr&&lastErr.errors&&lastErr.errors[0]&&lastErr.errors[0].message)||(lastErr&&lastErr.message)||'';
+ const quota=/HTTP 42\d|429|quota|FREE_LIMIT/i.test(String(msg));
+ els.list.innerHTML=`<div class="tone-error"><div class="err-title">말투 표현을 가져오지 못했어요</div>
+  <div class="err-sub">${quota?'서버가 잠시 바빠요. 잠시 뒤 다시 시도하세요.':'두 번 시도했지만 무료 AI 서버가 응답하지 않았어요.'} ⚙ 설정에서 Gemini 무료 키를 연결하면 훨씬 안정적이에요.</div>
+  <div class="err-actions"><button class="btn-primary sm" id="retryTones">다시 시도</button><button class="btn-ghost sm" id="openSet">설정 열기</button></div></div>`;
+ $('retryTones').onclick=genTones;
+ $('openSet').onclick=()=>{els.veil.hidden=false};
+}
+/* ─────────────── 단어별 뜻 (문장 입력 지원) ─────────────── */
+const glossCache=new Map();let glossRun=0,glossWords=[],glossResults=[];
+const escHTML=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function splitGlossWords(text){
+ const raw=text.replace(/[.,!?;:·•'"'""(){}\[\]<>~…\-–—]/g,' ').split(/\s+/).filter(Boolean);
+ const out=[],seen=new Set();
+ for(const w of raw){const k=w.toLowerCase();if(k&&!seen.has(k)){seen.add(k);out.push(w)}}
+ return out.slice(0,12);
+}
+function stripKrParticle(w){
+ if(!/[가-힣]{2,}$/.test(w))return null;
+ const parts=['에게서','에게','한테','에서','으로','부터','까지','처럼','보다','마다','이나','거나','지만','은','는','이','가','을','를','와','과','도','만','로','에','고','면','야'];
+ for(const p of parts)if(w.length-p.length>=2&&w.endsWith(p))return w.slice(0,-p.length);
+ return null;
+}
+async function lookupWord(w,tl){
+ const key=w+'|'+tl;
+ if(glossCache.has(key))return glossCache.get(key);
+ let dict=null,trans=null,p='';
+ try{const r=await fetchDictOnly(w,tl);dict=r.dict;trans=r.trans;p=r.translit||''}catch(e){}
+ if(!(dict&&dict.length)){
+  const st=stripKrParticle(w);
+  if(st){try{const r2=await fetchDictOnly(st,tl);
+   if(r2){if(r2.dict&&r2.dict.length)dict=r2.dict;trans=trans||r2.trans;p=p||r2.translit||''}}catch(e){}}
+ }
+ const res={dict,trans,p};
+ glossCache.set(key,res);
+ return res;
+}
+function pickSense(terms){
+ const cands=(terms||[]).map(t=>String(t).trim()).filter(Boolean);
+ if(!cands.length)return'';
+ const hay=' '+(lastTr||'').toLowerCase().replace(/[.,!?;:'"]/g,' ').replace(/\s+/g,' ')+' ';
+ const hit=cands.find(t=>{const st=t.toLowerCase();return st&&hay.includes(' '+st+' ')});
+ return hit||cands.slice(0,2).join(', ');
+}
+function glossChipHTML(w,res,pending){
+ const m=res?((res.dict&&res.dict[0]&&pickSense(res.dict[0].terms))||res.trans||res.m||''):'';
+ const pos=(res&&res.dict&&res.dict[0])?(POS_KO[res.dict[0].pos]||res.dict[0].pos||''):'';
+ const p=res&&res.p&&/[가-힣]/.test(res.p)&&els.target.value!=='ko'?res.p:'';
+ return `<span class="gloss-chip${pending?' pending':''}"${pos?` title="${escHTML(pos)}"`:''}><b dir="auto">${escHTML(w)}</b><span class="m">${pending?'&#8230;':escHTML(m||'&#8212;')}</span>${p?`<span class="p">${escHTML(p)}</span>`:''}</span>`;
+}
+async function renderGlossAsync(text,tl){
+ const words=splitGlossWords(text);
+ if(words.length<2){els.gloss.hidden=true;return}
+ const run=++glossRun;
+ glossWords=words;glossResults=new Array(words.length).fill(null);
+ els.gloss.hidden=false;
+ els.glossList.innerHTML=words.map(w=>glossChipHTML(w,null,true)).join('');
+ for(let i=0;i<words.length;i+=4){
+  const idxs=words.slice(i,i+4).map((_,j)=>i+j);
+  const settled=await Promise.all(idxs.map(ix=>lookupWord(words[ix],tl).then(r=>({ix,r})).catch(()=>({ix,r:null}))));
+  if(run!==glossRun)return;
+  settled.forEach(({ix,r})=>glossResults[ix]=r);
+  els.glossList.innerHTML=glossWords.map((w,ix)=>glossChipHTML(w,glossResults[ix],!glossResults[ix])).join('');
+ }
+}
+function applyGlossPron(gloss,tl){
+ if(!gloss||!gloss.length||!glossWords.length)return;
+ const map={};gloss.forEach(g=>{if(g&&g.w)map[String(g.w).trim().toLowerCase()]=g});
+ glossWords.forEach((w,ix)=>{
+  const st=stripKrParticle(w);
+  const g=map[w.toLowerCase()]||(st?map[st.toLowerCase()]:null);
+  if(!g)return;
+  const ck=w+'|'+tl,c=glossCache.get(ck);
+  if(c)glossCache.set(ck,{...c,p:c.p||g.p});
+  else glossCache.set(ck,{dict:null,trans:g.m,p:g.p});
+  glossResults[ix]=glossCache.get(ck);
+ });
+ glossRun++;
+ els.gloss.hidden=false;
+ els.glossList.innerHTML=glossWords.map((w,ix)=>glossChipHTML(w,glossResults[ix],!glossResults[ix])).join('');
+}
+
+/* ─────────────── 렌더 ─────────────── */
+function waveHTML(bars){
+ return `<div class="wave" aria-hidden="true">${bars.map((h,i)=>`<span style="--h:${h};--d:${(i%4)*0.13}"></span>`).join('')}</div>`;
+}
+function renderPron(pr){
+ if(!pr||els.target.value==='ko'||!/[가-힣]/.test(String(pr))){els.pron.hidden=true;return}
+ els.pron.innerHTML='<b>발음 표기</b>';
+ els.pron.appendChild(document.createTextNode(pr));
+ els.pron.hidden=false;
+}
+function renderDict(dict){
+ if(dict&&dict.length){
+  els.dict.hidden=false;
+  els.dict.innerHTML=dict.slice(0,4).map(e=>{
+   const rev=(e.entry||[]).flatMap(x=>x.reverse_translation||[]).slice(0,4).join(', ');
+   return `<div class="dict-row"><span class="dict-pos">${POS_KO[e.pos]||e.pos||''}</span>
+    <span class="dict-terms">${(e.terms||[]).slice(0,5).join(', ')}</span>
+    ${rev?`<span class="dict-rev">&#8594; ${rev}</span>`:''}</div>`;
+  }).join('');
+  els.hint.hidden=true;
+ }else{
+  els.dict.hidden=true;els.dict.innerHTML='';
+  els.hint.hidden=els.input.value.trim().split(/\s+/).length===1;
+ }
+}
+async function fillToneWords(box,text,run){
+ const words=splitGlossWords(text).slice(0,4);
+ if(words.length<2)return;
+ const rs=await Promise.all(words.map(w=>lookupWord(w,'ko').catch(()=>null)));
+ if(run!==trToneRun)return;
+ box.hidden=false;
+ box.innerHTML=words.map((w,ix)=>glossChipHTML(w,rs[ix],!rs[ix])).join('');
+}
+function buildToneCard(t,v,i){
+ const card=document.createElement('article');
+ card.className='tone-card';card.style.setProperty('--tone',t.color);card.style.setProperty('--i',i);card.dataset.k=t.k;
+ card.innerHTML=`
+  <div class="tone-head">
+   <span class="tone-emoji">${t.e}</span>
+   <span class="tone-name">${t.name}</span>
+   ${waveHTML(t.bars)}
+   <div class="tone-actions">
+    <button class="mini-btn b-regen" title="이 말투만 새 표현으로 다시 만들기" aria-label="${t.name} 다시 만들기">&#8635;</button>
+    <button class="mini-btn b-speak" title="발음 듣기" aria-label="${t.name} 발음 듣기">&#128266;</button>
+    <button class="mini-btn b-copy" title="복사" aria-label="${t.name} 복사">&#10064;</button>
+   </div>
+  </div>
+  <p class="tone-text"${isRTL(els.target.value)?' dir="rtl"':''}></p>
+  ${v.pron&&/[가-힣]/.test(v.pron)&&els.target.value!=='ko'?`<p class="tone-pron"><b>발음</b><span class="pp"></span></p>`:''}
+  ${v.note?`<p class="tone-note"></p>`:''}
+  <div class="tone-words"${v.words&&v.words.length?'':' hidden'}></div>`;
+ card.querySelector('.tone-text').textContent=v.text;
+ if(v.pron&&/[가-힣]/.test(v.pron)&&els.target.value!=='ko')card.querySelector('.tone-pron .pp').textContent=v.pron;
+ if(v.note)card.querySelector('.tone-note').textContent='※ '+v.note;
+ const tw=card.querySelector('.tone-words'),runAt=trToneRun;
+ if(v.words&&v.words.length)tw.innerHTML=v.words.map(x=>glossChipHTML(x.w,{m:x.m,p:x.p},false)).join('');
+ else fillToneWords(tw,v.text,runAt);
+ card.querySelector('.b-copy').onclick=()=>{copyText(v.text);};
+ card.querySelector('.b-speak').onclick=e=>{speak(v.text,els.target.value,e.currentTarget,card.querySelector('.wave'));};
+ card.querySelector('.b-regen').onclick=()=>regenTone(t.k,card,i);
+ return card;
+}
+function pendingCardEl(t,i){
+ const n=document.createElement('article');
+ n.className='tone-card tone-pending';n.style.setProperty('--tone',t.color);n.style.setProperty('--i',i);
+ n.dataset.k=t.k;n.dataset.i=i;
+ n.innerHTML=`<div class="tone-head"><span class="tone-emoji">${t.e}</span><span class="tone-name">${t.name}</span><div class="tone-actions"><span class="pend-label">만들고 있어요…</span></div></div><div class="tone-skel"><div class="l"></div><div class="l b"></div><div class="l c"></div></div>`;
+ return n;
+}
+function renderTones(tones,pron,miss){
+ miss=miss||[];
+ if(pron)renderPron(pron);
+ els.status.textContent=`${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})} 완성`;
+ els.list.innerHTML='';
+ TONES.filter(t=>toneSel.includes(t.k)).forEach((t,i)=>{
+  const v=tones[t.k];
+  if(v&&v.text)els.list.appendChild(buildToneCard(t,v,i));
+  else if(miss.includes(t.k))els.list.appendChild(pendingCardEl(t,i));
+ });
+}
+/* 말투별 개별 재생성 — 그 말투 1개만 다시 요청해 카드만 조용히 교체 */
+async function regenTone(k,card,i){
+ if(!lastTr){toast('먼저 번역을 실행해 주세요');return}
+ const t=TONES.find(x=>x.k===k);
+ const txt=card.querySelector('.tone-text'),oldTxt=txt.textContent;
+ const rb=card.querySelector('.b-regen');
+ rb.disabled=true;card.classList.add('regen-busy');txt.textContent='새 표현을 만들고 있어요…';
+ const runAt=trToneRun;
+ try{
+  const providers=[];
+  if(settings.geminiKey)providers.push([fetchGemini,'gemini',25000,0]);
+  providers.push([fetchPollPost,'openai-fast',45000,0]);
+   reqKeys=[k];megaMode=true;
+   const cd0=aiCooldownSec();
+   if(cd0>0&&cd0<180){txt.textContent=`서버 쿨다운 ${cd0}초 뒤 시작…`;await new Promise(r=>setTimeout(r,cd0*1000));if(runAt!==trToneRun)return;txt.textContent='새 표현을 만들고 있어요…';}
+  const raw=await Promise.any(providers.map(([fn,m,ms,d])=>raceProvider(fn,m,ms,d)));
+  if(runAt!==trToneRun)return;
+  const one=normalizeMega(raw,lastTr,[k]);
+  const v=one.tones[k];
+  if(!v||!v.text)throw new Error('bad-shape');
+  if(curCkey){try{const c=loadToneCache();if(c[curCkey]&&c[curCkey].tones){c[curCkey].tones[k]=v;c[curCkey].ts=Date.now();localStorage.setItem(TONE_CACHE_KEY,JSON.stringify(c))}}catch(e){}}
+  card.replaceWith(buildToneCard(t,v,i));
+  els.status.textContent='다시 만들기 완료';
+ }catch(e){
+  if(runAt!==trToneRun)return;
+  txt.textContent=oldTxt;
+  toast('이 말투를 다시 만들지 못했어요 · 잠시 후 다시 시도');
+ }finally{
+  card.classList.remove('regen-busy');
+  const b=card.querySelector('.b-regen');if(b)b.disabled=false;
+ }
+}
+function renderTranslation(res){
+ lastTr=res.trans;lastSrc=res.src;lastTranslit=res.translit||'';
+ els.result.hidden=false;
+ els.trText.textContent=res.trans;
+ els.trText.dir=isRTL(els.target.value)?'rtl':'ltr';
+ els.targetChip.innerHTML=langChip(els.target.value);
+ renderPron(res.translit||null);
+ renderDict(res.dict||null);
+}
+
+/* ─────────────── 동작 ─────────────── */
+async function doTranslate(){
+ const text=els.input.value.trim();
+ if(!text)return;
+ trToneRun++;killToneReqs();clearInterval(timer);glossRun++;
+ els.status.textContent='';
+ els.result.hidden=false;
+ els.trText.textContent='';els.targetChip.innerHTML=langChip(els.target.value);
+ els.pron.hidden=true;els.hint.hidden=true;pronShown=false;els.gloss.hidden=true;
+ els.dict.hidden=true;els.list.innerHTML=
+  `<div class="tone-skel"><div class="l"></div><div class="l b"></div><div class="l c"></div></div>`
+  .repeat(2)+'<div class="tone-skel"><div class="l"></div><div class="l b"></div></div>';
+ try{
+  const res=await chainTranslate(text,els.target.value);
+  els.chip.innerHTML=langChip(res.src);
+  renderTranslation(res);
+  lastSrc=res.src;
+   if(!res.dict&&text.trim().split(/\s+/).length===1){
+    fetchDictOnly(text,els.target.value).then(r=>{
+     if(r&&r.dict&&r.dict.length&&lastTr===res.trans)renderDict(r.dict);
+    }).catch(()=>{});
+   }
+   renderGlossAsync(els.target.value!=='ko'?lastTr:text,'ko');
+   genTones();
+ }catch(e){
+  clearInterval(timer);
+  els.status.textContent='';
+  els.trText.innerHTML='<span style="color:var(--danger);font-size:16px;font-family:var(--sans)">번역에 실패했어요. 잠시 후 다시 시도해 주세요.</span>';
+  els.list.innerHTML='';
+ }
+}
+function copyText(t){
+ (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('복사했어요')).catch(()=>{
+  const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast('복사했어요')}catch(e){toast('복사 실패')}ta.remove();
+ });
+}
+/* 모바일: 음성 목록이 늦게 로드되는 기기가 많아 미리 웜업해 둔다 */
+if('onvoiceschanged' in speechSynthesis)speechSynthesis.addEventListener('voiceschanged',()=>speechSynthesis.getVoices());
+function speak(text,tl,btn,wave){
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang=tl==='zh-TW'?'zh-TW':tl.split('-')[0];
+ const vs=speechSynthesis.getVoices();
+ const v=vs.find(v=>v.lang.toLowerCase()===tl.toLowerCase())||vs.find(v=>v.lang.toLowerCase().replace('_','-').startsWith(u.lang.split('-')[0]));
+ if(v)u.voice=v;
+ u.rate=.95;
+ if(wave){wave.classList.add('playing');u.onend=u.onerror=()=>wave.classList.remove('playing');}
+ speechSynthesis.cancel();speechSynthesis.speak(u);
+}
+
+/* ─────────────── 이벤트 ─────────────── */
+LANGS.forEach(l=>{const o=document.createElement('option');o.value=l.c;o.textContent=`${l.f} ${l.k}`;els.target.appendChild(o)});
+els.target.value='en';renderTonePick();
+let deb=null;
+els.input.addEventListener('input',()=>{
+ els.count.textContent=els.input.value.length+'자';
+ const q=quickDetect(els.input.value);
+ if(q)els.chip.innerHTML=langChip(q);
+ clearTimeout(deb);
+  if(els.input.value.trim().length>=2)deb=setTimeout(doTranslate,1200);
+});
+els.input.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();doTranslate()}});
+els.target.addEventListener('change',()=>{if(lastTr||els.input.value.trim())doTranslate()});
+$('translateBtn').addEventListener('click',doTranslate);
+$('trCopy').addEventListener('click',()=>copyText(lastTr));
+$('trSpeak').addEventListener('click',()=>speak(lastTr,els.target.value));
+$('swapBtn').addEventListener('click',()=>{
+ if(!lastTr)return toast('바꿀 번역 결과가 아직 없어요');
+  const dl=langBy[lastSrc];els.input.value=lastTr;
+  if(dl){els.target.value=dl.c;if(dl.c!=='ko')setStudyLang(dl.c);els.targetChip.innerHTML=langChip(dl.c)}
+ els.count.textContent=els.input.value.length+'자';
+ doTranslate();
+});
+$('settingsBtn').addEventListener('click',()=>{
+ els.veil.hidden=false;
+ document.querySelector(`input[name=prov][value=${settings.provider}]`).checked=true;
+ els.key.value=settings.geminiKey;
+});
+$('veilClose').addEventListener('click',()=>els.veil.hidden=true);
+els.veil.addEventListener('click',e=>{if(e.target===els.veil)els.veil.hidden=true});
+$('veilSave').addEventListener('click',()=>{
+ settings.provider=document.querySelector('input[name=prov]:checked').value;
+ settings.geminiKey=els.key.value.trim();
+ localStorage.setItem('nuance_settings',JSON.stringify(settings));
+ els.veil.hidden=true;toast('설정을 저장했어요');
+ if(lastTr)genTones();
+});
+
+/* ─────────────── 모드 라우터 (번역 · 단어공부 · 회화) ─────────────── */
+const SCREENS=['home','translate','vocab','conv'];
+function go(m){
+ if(!SCREENS.includes(m))m='home';
+ SCREENS.forEach(k=>{$('scr-'+k).hidden=k!==m});
+ $('topbar').classList.toggle('in-mode',m!=='home');
+ $('studyWrap').hidden=!(m==='vocab'||m==='conv');
+ document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+ window.scrollTo(0,0);
+}
+document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>go(b.dataset.m)));
+document.querySelectorAll('.mode-card').forEach(c=>{
+ c.addEventListener('click',()=>go(c.dataset.go));
+ c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go(c.dataset.go)}});
+});
+$('brandHome').addEventListener('click',()=>go('home'));
+$('brandHome').addEventListener('keydown',e=>{if(e.key==='Enter')go('home')});
+
+/* ─────────────── 공부 언어 (단어공부 · 회화 · 번역기 공통) ─────────────── */
+const STUDY_KEY='nuance_study_lang';
+let studyLang='en';
+try{const v=localStorage.getItem(STUDY_KEY);if(v&&langBy[v]&&v!=='ko')studyLang=v}catch(e){}
+$('studySel').innerHTML=LANGS.filter(l=>l.c!=='ko').map(l=>`<option value="${l.c}">${l.f} ${l.k}</option>`).join('');
+$('studySel').value=studyLang;
+els.target.value=studyLang;
+function updateConvLangUI(){
+ const L=langBy[studyLang],chip=$('convLangChip'),inp=$('convIn');
+ if(chip)chip.textContent=`${L.f} ${L.k} 연습`;
+ if(inp)inp.placeholder=`${L.k}로 답해 보세요. 모르면 한국어로 써도 돼요 — ${L.k} 표현을 알려드려요`;
+}
+function setStudyLang(c){
+ if(!c||!langBy[c]||c==='ko')return;
+ studyLang=c;try{localStorage.setItem(STUDY_KEY,c)}catch(e){}
+ $('studySel').value=c;els.target.value=c;
+ convHist=[];
+ vocRender();updateConvLangUI();
+}
+$('studySel').addEventListener('change',e=>setStudyLang(e.target.value));
+els.target.addEventListener('change',e=>{if(e.target.value!=='ko')setStudyLang(e.target.value)});
+updateConvLangUI();
+
+/* ─────────────── 단어공부 (완전 무료: 구글 번역 + 브라우저 발음) ─────────────── */
+const VOC_KEY='nuance_vocab_v1';
+let VOC=[];
+try{const a=JSON.parse(localStorage.getItem(VOC_KEY)||'[]');if(Array.isArray(a))VOC=a.filter(x=>x&&(x.f||x.en)&&x.ko).map(x=>({f:String(x.f||x.en),ko:String(x.ko),lang:(x.lang&&langBy[x.lang]&&x.lang!=='ko')?x.lang:'en',ts:x.ts||Date.now()}))}catch(e){}
+function vocLang(w){return w.lang||'en'}
+function vocPool(){return VOC.filter(w=>vocLang(w)===studyLang)}
+function vocSave(){try{localStorage.setItem(VOC_KEY,JSON.stringify(VOC.slice(-400)))}catch(e){}}
+function vocRender(){
+ const pool=vocPool(),has=pool.length>0;
+ $('vocCount').textContent=langBy[studyLang].f+' '+pool.length+'개 저장됨';
+ $('vocMain').hidden=!has;$('vocEmpty').hidden=has;
+ $('vocCardBtn').disabled=!has;$('vocQuizBtn').disabled=pool.length<4;
+ $('vocList').innerHTML=pool.slice().reverse().map(w=>{const i=VOC.indexOf(w);
+  return `<div class="voc-row"><div style="min-width:0"><div class="voc-en" dir="auto">${escHTML(w.f)}</div><div class="voc-ko">${escHTML(w.ko)}</div></div>
+   <div style="margin-left:auto;display:flex;gap:6px;flex:none">
+   <button class="mini-btn b-vspeak" title="발음 듣기" aria-label="발음 듣기" data-i="${i}">&#128266;</button>
+   <button class="mini-btn b-vdel" title="삭제" aria-label="삭제" data-i="${i}">&#10005;</button></div></div>`}).join('');
+ $('vocList').querySelectorAll('.b-vspeak').forEach(b=>b.onclick=()=>{const w=VOC[+b.dataset.i];speak(w.f,vocLang(w))});
+ $('vocList').querySelectorAll('.b-vdel').forEach(b=>b.onclick=()=>{VOC.splice(+b.dataset.i,1);vocSave();vocRender()});
+}
+async function vocAdd(){
+ const t=$('vocIn').value.trim();if(!t)return;
+ const btn=$('vocAddBtn');btn.disabled=true;btn.textContent='찾는 중…';
+  try{
+   const src=quickDetect(t)||studyLang;
+   let f,ko,lang;
+   if(src==='ko'){
+    const r=await chainTranslate(t,studyLang);
+    f=String(r.trans).trim();ko=t;lang=studyLang;
+   }else{
+    const r=await chainTranslate(t,'ko');
+    f=t;lang=src===studyLang?studyLang:src;
+    ko=String((r.dict&&r.dict[0]&&r.dict[0].terms&&r.dict[0].terms[0])||r.trans).trim();
+   }
+   if(!f||!ko)throw new Error('empty');
+   if(VOC.some(x=>x.lang===lang&&x.f.toLowerCase()===f.toLowerCase()))toast('이미 저장한 단어예요');
+   else{VOC.push({f,ko,lang,ts:Date.now()});vocSave();toast(lang===studyLang?'저장했어요':langBy[lang].k+' 단어로 저장했어요')}
+   $('vocIn').value='';vocRender();
+  }catch(e){toast('뜻을 찾지 못했어요 · 잠시 후 다시 시도해 주세요')}
+ finally{btn.disabled=false;btn.textContent='추가'}
+}
+const VOC_PRESETS={
+ en:[['Hello','안녕하세요'],['Thank you','감사합니다'],['Excuse me','저기요'],['Sorry','미안해요'],['How much is it?','얼마예요?'],['Where is the station?','역이 어디예요?'],['Water, please','물 주세요'],['Delicious','맛있어요'],['Check, please','계산할게요'],["Nice to meet you",'만나서 반가워요'],["I don't understand",'이해하지 못했어요'],['See you later','나중에 봐요']],
+ ja:[['こんにちは','안녕하세요'],['ありがとうございます','감사합니다'],['すみません','죄송해요 · 저기요'],['これをください','이거 주세요'],['いくらですか','얼마예요?'],['トイレはどこですか','화장실이 어디예요?'],['助けてください','도와주세요'],['おいしいです','맛있어요'],['ちょっと待ってください','잠시만 기다려 주세요'],['もう一度言ってください','다시 한번 말해 주세요'],['大丈夫です','괜찮아요'],['はじめまして','처음 뵙겠어요']],
+ zh:[['你好','안녕하세요'],['谢谢','감사합니다'],['对不起','죄송해요'],['我要这个','이거 주세요'],['多少钱?','얼마예요?'],['洗手间在哪里?','화장실이 어디예요?'],['请帮帮我','도와주세요'],['很好吃','맛있어요'],['请等一下','잠시만 기다려 주세요'],['请再说一遍','다시 한번 말해 주세요'],['没关系','괜찮아요'],['初次见面','처음 뵙겠어요']],
+ 'zh-TW':[['你好','안녕하세요'],['謝謝','감사합니다'],['對不起','죄송해요'],['我要這個','이거 주세요'],['多少錢?','얼마예요?'],['洗手間在哪裡?','화장실이 어디예요?'],['請幫幫我','도와주세요'],['很好吃','맛있어요'],['請等一下','잠시만 기다려 주세요'],['請再說一遍','다시 한번 말해 주세요'],['沒關係','괜찮아요'],['初次見面','처음 뵙겠어요']],
+ es:[['Hola','안녕하세요'],['Gracias','감사합니다'],['Lo siento','죄송해요'],['Este, por favor','이거 주세요'],['¿Cuánto cuesta?','얼마예요?'],['¿Dónde está el baño?','화장실이 어디예요?'],['Ayuda, por favor','도와주세요'],['Está delicioso','맛있어요'],['Un momento, por favor','잠시만 기다려 주세요'],['¿Puede repetirlo?','다시 한번 말해 주세요'],['No pasa nada','괜찮아요'],['Mucho gusto','만나서 반가워요']],
+ fr:[['Bonjour','안녕하세요'],['Merci','감사합니다'],['Désolé','죄송해요'],['Ceci, s’il vous plaît','이거 주세요'],['Combien ça coûte ?','얼마예요?'],['Où sont les toilettes ?','화장실이 어디예요?'],['Au secours','도와주세요 · 살려주세요'],['C’est délicieux','맛있어요'],['Un instant, s’il vous plaît','잠시만 기다려 주세요'],['Pouvez-vous répéter ?','다시 한번 말해 주세요'],['Pas de problème','괜찮아요'],['Enchanté','만나서 반가워요']],
+ de:[['Hallo','안녕하세요'],['Danke','감사합니다'],['Entschuldigung','죄송해요'],['Diesen, bitte','이거 주세요'],['Wie viel kostet das?','얼마예요?'],['Wo ist die Toilette?','화장실이 어디예요?'],['Hilfe, bitte','도와주세요'],['Das ist lecker','맛있어요'],['Einen Moment, bitte','잠시만 기다려 주세요'],['Können Sie das wiederholen?','다시 한번 말해 주세요'],['Kein Problem','괜찮아요'],['Freut mich','만나서 반가워요']],
+ it:[['Buongiorno','안녕하세요'],['Grazie','감사합니다'],['Mi dispiace','죄송해요'],['Questo, per favore','이거 주세요'],['Quanto costa?','얼마예요?'],['Dov’è il bagno?','화장실이 어디예요?'],['Aiuto, per favore','도와주세요'],['È buonissimo','맛있어요'],['Un momento, per favore','잠시만 기다려 주세요'],['Può ripetere, per favore?','다시 한번 말해 주세요'],['Non è un problema','괜찮아요'],['Piacere','만나서 반가워요']],
+ ru:[['Здравствуйте','안녕하세요'],['Спасибо','감사합니다'],['Извините','죄송해요'],['Это, пожалуйста','이거 주세요'],['Сколько это стоит?','얼마예요?'],['Где туалет?','화장실이 어디예요?'],['Помогите, пожалуйста','도와주세요'],['Очень вкусно','아주 맛있어요'],['Подождите минутку','잠시만 기다려 주세요'],['Повторите, пожалуйста','다시 한번 말해 주세요'],['Всё в порядке','괜찮아요'],['Очень приятно','만나서 반가워요']],
+ pt:[['Olá','안녕하세요'],['Obrigado','감사합니다'],['Desculpe','죄송해요'],['Este, por favor','이거 주세요'],['Quanto custa?','얼마예요?'],['Onde fica o banheiro?','화장실이 어디예요?'],['Me ajude, por favor','도와주세요'],['Está uma delícia','정말 맛있어요'],['Um momento, por favor','잠시만 기다려 주세요'],['Pode repetir, por favor?','다시 한번 말해 주세요'],['Sem problema','괜찮아요'],['Prazer em conhecê-lo','만나서 반가워요']],
+ vi:[['Xin chào','안녕하세요'],['Cảm ơn','감사합니다'],['Xin lỗi','죄송해요'],['Cho tôi cái này','이거 주세요'],['Cái này bao nhiêu tiền?','이거 얼마예요?'],['Nhà vệ sinh ở đâu?','화장실이 어디예요?'],['Hãy giúp tôi với','도와주세요'],['Ngon quá','맛있어요'],['Xin đợi một chút','잠시만 기다려 주세요'],['Bạn nói lại giúp tôi nhé?','다시 한번 말해 주세요'],['Không sao đâu','괜찮아요'],['Rất vui được gặp bạn','만나서 반가워요']]
+};
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+let FC=null;
+function fcStart(){
+ const pool=vocPool();FC={deck:shuffle(pool.slice()),cur:null,again:0,seen:0,total:pool.length};
+ $('vocMain').hidden=true;$('vocEmpty').hidden=true;$('vocStudy').hidden=false;fcNext();
+}
+function fcNext(){
+ if(!FC.deck.length){
+  $('vocStudy').innerHTML=`<section class="panel compose"><div class="panel-head"><span class="panel-label">카드 학습 완료</span></div>
+   <p class="qz-done-num">${FC.total}<span style="font-size:16px;color:var(--faint)"> 장</span></p>
+   <p class="voc-ko">다시 볼래요 표시한 카드 ${FC.again}장 · 반복해서 보면 오래 남아요</p>
+   <div class="fc-actions"><button class="btn-primary sm" id="fcMore">한 번 더</button><button class="btn-ghost sm" id="fcBack">목록으로</button></div></section>`;
+  $('fcMore').onclick=fcStart;$('fcBack').onclick=vocBack;return;
+ }
+ FC.cur=FC.deck.shift();FC.seen++;
+ const c=FC.cur;
+ $('vocStudy').innerHTML=`
+  <div class="fc-meta"><span>카드 ${FC.seen} / ${FC.total}</span><span>다시 볼래요 ${FC.again}</span></div>
+  <div class="fc-scene"><div class="fc-card" id="fcCard" role="button" tabindex="0">
+    <div class="fc-face fc-front"><div class="fc-word" dir="auto">${escHTML(c.f)}</div><button class="mini-btn" id="fcSpeak" title="발음 듣기">&#128266;</button><div class="fc-sub">카드를 누르면 뜻이 뒤집혀요</div></div>
+    <div class="fc-face fc-back"><div class="fc-word">${escHTML(c.ko)}</div><div class="fc-sub" dir="auto">${escHTML(c.f)}</div><div class="fc-sub">카드를 다시 누르면 돌아가요</div></div>
+  </div></div>
+  <div class="fc-actions"><button class="btn-again" id="btnAgain">다시 볼래요</button><button class="btn-know" id="btnKnow">외웠어요</button></div>`;
+ const card=$('fcCard');
+ card.onclick=e=>{if(e.target.id!=='fcSpeak')card.classList.toggle('flip')};
+ card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.classList.toggle('flip')}};
+ $('fcSpeak').onclick=e=>{e.stopPropagation();speak(c.f,vocLang(c))};
+ $('btnAgain').onclick=()=>{FC.again++;FC.deck.push(FC.cur);fcNext()};
+ $('btnKnow').onclick=fcNext;
+}
+function vocBack(){$('vocStudy').hidden=true;$('vocMain').hidden=false;vocRender()}
+let QZ=null;
+function qzStart(deck){
+ const pool=vocPool();
+ if(pool.length<4)return toast('퀴즈는 단어를 4개 이상 저장하면 시작할 수 있어요');
+ const src=deck&&deck.length?deck.slice():pool;
+ QZ={deck:shuffle(src),cur:null,score:0,n:0,total:src.length,wrong:[],lock:false};
+ $('vocMain').hidden=true;$('vocEmpty').hidden=true;$('vocStudy').hidden=false;qzNext();
+}
+function qzNext(){
+ if(!QZ.deck.length){
+  const bad=QZ.wrong;
+  $('vocStudy').innerHTML=`<section class="panel compose"><div class="panel-head"><span class="panel-label">퀴즈 완료</span></div>
+   <p class="qz-done-num">${QZ.score}<span style="font-size:16px;color:var(--faint)"> / ${QZ.total}</span></p>
+   <p class="voc-ko">${bad.length?'틀린 '+bad.length+'개는 아래에 정리했어요 · 틀린 것만 다시 볼 수 있어요':'전부 맞혔어요! 완벴해요'}</p>
+   ${bad.length?`<div class="voc-list" style="margin-top:14px">${bad.map(w=>`<div class="voc-row"><div style="min-width:0"><div class="voc-en" dir="auto">${escHTML(w.f)}</div><div class="voc-ko">${escHTML(w.ko)}</div></div></div>`).join('')}</div>`:''}
+   <div class="fc-actions">
+    ${bad.length>=4?'<button class="btn-primary sm" id="qzWrong">틀린 것만 다시</button>':''}
+    <button class="btn-ghost sm" id="qzAgain">처음부터</button><button class="btn-ghost sm" id="qzBack">목록으로</button></div></section>`;
+  if(bad.length>=4)$('qzWrong').onclick=()=>qzStart(bad.slice());
+  $('qzAgain').onclick=()=>qzStart();
+  $('qzBack').onclick=vocBack;return;
+ }
+ QZ.cur=QZ.deck.shift();QZ.n++;QZ.lock=false;
+ const c=QZ.cur,dir=Math.random()<.5?'f2ko':'ko2f';
+ const q=dir==='f2ko'?c.f:c.ko,ans=dir==='f2ko'?c.ko:c.f;
+ QZ.ans=ans;
+ const opts=shuffle([ans,...shuffle(vocPool().filter(x=>x!==c)).slice(0,3).map(x=>dir==='f2ko'?x.ko:x.f)]);
+ $('vocStudy').innerHTML=`<section class="panel compose"><div class="panel-head"><span class="panel-label">퀴즈</span><span class="chip">${QZ.n} / ${QZ.total} &#183; ${QZ.score}점</span></div>
+  <p class="qz-q">${dir==='f2ko'?'이 표현의 뜻은 무엇일까요?':'이 표현을 '+(langBy[c.lang]?langBy[c.lang].k:'외국어')+'로 어떻게 말할까요?'}</p>
+  <div class="qz-word" dir="auto">${escHTML(q)}</div>
+  <div class="qz-opts">${opts.map((o,i)=>`<button class="qz-opt" data-o="${i}">${escHTML(o)}</button>`).join('')}</div></section>`;
+ $('vocStudy').querySelectorAll('.qz-opt').forEach(b=>b.onclick=()=>qzAnswer(b,opts[+b.dataset.o]));
+}
+function qzAnswer(btn,val){
+ if(QZ.lock)return;QZ.lock=true;
+ const ok=val===QZ.ans;
+ if(ok)QZ.score++;else QZ.wrong.push(QZ.cur);
+ $('vocStudy').querySelectorAll('.qz-opt').forEach(b=>{
+  b.disabled=true;
+  if(b.textContent===QZ.ans)b.classList.add('ok');
+  else if(b===btn)b.classList.add('bad');
+ });
+ setTimeout(qzNext,850);
+}
+$('vocAddBtn').addEventListener('click',vocAdd);
+$('vocIn').addEventListener('keydown',e=>{if(e.key==='Enter')vocAdd()});
+$('vocPreset').addEventListener('click',()=>{
+ const P=VOC_PRESETS[studyLang];
+ if(!P)return toast('이 언어 기초 표현은 준비 중이에요 · 직접 단어를 추가해 보세요');
+ let n=0;
+ P.forEach(p=>{if(!VOC.some(x=>x.lang===studyLang&&x.f.toLowerCase()===p[0].toLowerCase())){VOC.push({f:p[0],ko:p[1],lang:studyLang,ts:Date.now()});n++}});
+ vocSave();vocRender();toast(n?n+'개를 불러왔어요':'이미 모두 저장돼 있어요');
+});
+$('vocCardBtn').addEventListener('click',()=>{if(VOC.length)fcStart()});
+$('vocQuizBtn').addEventListener('click',()=>qzStart());
+vocRender();
+
+/* ─────────────── 회화 (무료 AI 롤플레이) ─────────────── */
+const SCEN=[
+ {id:'cafe',e:'☕',t:'카페 주문',d:'You are a warm, chatty barista at a cozy coffee shop.'},
+ {id:'airport',e:'🛬',t:'공항 체크인',d:'You are a check-in agent at an airport counter helping a passenger.'},
+ {id:'hotel',e:'🏨',t:'호텔 프론트',d:'You are a kind front-desk clerk at a hotel.'},
+ {id:'rest',e:'🍽️',t:'식당 주문',d:'You are a friendly server at a restaurant.'},
+ {id:'shop',e:'🛍️',t:'쇼핑',d:'You are a helpful clerk at a clothing store.'},
+ {id:'road',e:'🗺️',t:'길 묻기',d:'You are a friendly local the learner stops on the street to ask for directions.'},
+ {id:'biz',e:'💼',t:'비즈니스 미팅',d:'You are a colleague meeting the learner for the first time in a video call.'},
+ {id:'free',e:'✨',t:'자유 대화',d:"You are the learner's new foreign friend, chatting about everyday life."}
+];
+const LVLS=[
+ {id:'easy',t:'초급',d:'Use only very common everyday words and short, simple sentences.'},
+ {id:'mid',t:'중급',d:'Use natural everyday language with common idioms, moderate length.'},
+ {id:'high',t:'고급',d:'Speak fully naturally like a native, idiomatic and nuanced.'}
+];
+let convScen=SCEN[0],convLvl=LVLS[0],convHist=[],convBusy=false,convRun=0,convCtrl=null;
+function convRenderOpts(){
+ $('scenGrid').innerHTML=SCEN.map(s=>`<button class="scen-btn${s===convScen?' on':''}" data-id="${s.id}">${s.e} ${s.t}</button>`).join('');
+ $('lvlGrid').innerHTML=LVLS.map(l=>`<button class="scen-btn${l===convLvl?' on':''}" data-id="${l.id}">${l.t}</button>`).join('');
+ document.querySelectorAll('#scenGrid .scen-btn').forEach(b=>b.onclick=()=>{convScen=SCEN.find(x=>x.id===b.dataset.id)||convScen;convRenderOpts()});
+ document.querySelectorAll('#lvlGrid .scen-btn').forEach(b=>b.onclick=()=>{convLvl=LVLS.find(x=>x.id===b.dataset.id)||convLvl;convRenderOpts()});
+}
+function buildConvSys(first){
+ const L=langBy[studyLang]?langBy[studyLang].n:'English';
+ return `You are a friendly native ${L} speaker role-playing a conversation so a Korean learner can practice speaking.
+SCENE: ${convScen.d} ${convScen.e}
+LEARNER LEVEL: ${convLvl.d}
+${first?'The learner just joined, so OPEN the scene yourself with a natural first line as your role.':'Reply to what the learner just said.'}
+Answer with EXACTLY these four lines, plain text, no markdown, nothing else:
+FIX: <the more natural ${L} way to say the learner's last message, then " -> " and a short Korean explanation of the fix; if their last message was already perfect ${L}, write OK>
+REPLY: <your in-character line in ${L}: 1-2 short sentences, warm and encouraging, ending with a small question to keep the talk going, max 30 words>
+PRON: <your REPLY read aloud in easy Korean hangul for a Korean reader, spaces between words, max 90 chars>
+KO: <natural Korean translation of your REPLY>
+Rules: stay in character; never vulgar; never number the lines; never repeat lines you already used. Write FIX and REPLY in natural ${L} script only (no romanization, no pinyin, no romaji).`;
+}
+function convParse(t){
+ const grab=re=>{const m=re.exec(String(t));return m?m[1].trim():''};
+ return{
+  fix:grab(/FIX:[ \t]*([\s\S]*?)(?=\nREPLY:|\nPRON:|\nKO:|$)/),
+  reply:grab(/REPLY:[ \t]*([\s\S]*?)(?=\nPRON:|\nKO:|$)/),
+  pron:grab(/PRON:[ \t]*([\s\S]*?)(?=\nKO:|$)/),
+  ko:grab(/KO:[ \t]*([\s\S]*)$/)
+ };
+}
+async function pollChat(messages,maxTokens,onChunk,sig){
+ const body={model:'openai-fast',referrer:'nuance-translator',temperature:.8,stream:true,max_tokens:maxTokens,messages};
+ markAIFire();
+ const r=await fetch('https://text.pollinations.ai/openai',{method:'POST',signal:sig,
+  headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ if(!r.ok){
+  let msg='poll HTTP '+r.status;
+  try{const b=await r.text();const mm=/retry after (\d+)/i.exec(b);if(r.status===402&&mm)msg='FREE_LIMIT:'+mm[1]}catch(e){}
+  throw new Error(msg);
+ }
+ if(!r.body||!r.body.getReader){
+  const d=await r.json();const ch=(d.choices||[])[0]||{};
+  const c=(ch.message&&ch.message.content)||ch.text||'';
+  if(onChunk&&c)onChunk(c);return c;
+ }
+ const {full,allRaw}=await pollSSE(r,onChunk);
+ if(String(full).trim())return full;
+ try{const j=JSON.parse(allRaw);const ch=(j.choices||[])[0]||{};const c=(ch.message&&ch.message.content)||ch.text||'';if(c)return c}catch(e){}
+ throw new Error('empty-stream');
+}
+function bubEl(cls,html){
+ const d=document.createElement('div');d.className='bub '+cls;d.innerHTML=html;
+ $('convLog').appendChild(d);window.scrollTo(0,document.body.scrollHeight);return d;
+}
+function fixHTML(f){
+ return f&&f.toUpperCase()!=='OK'?`<div class="fix">&#128161; ${escHTML(f)}</div>`:'';
+}
+async function convSend(first,txtIn){
+ if(convBusy)return;
+ let txt='';
+ if(!first){txt=String(txtIn!=null?txtIn:$('convIn').value).trim();if(!txt)return;$('convIn').value='';}
+ convBusy=true;const run=++convRun;$('convSend').disabled=true;
+ if(!first)bubEl('me',escHTML(txt));
+ const live=bubEl('ai','<div class="tr">준비 중&#8230;</div>');
+ try{
+  const cd=aiCooldownSec();
+  if(cd>0&&cd<180){
+   live.innerHTML=`<div class="tr">무료 서버 쿨다운 ${cd}초 &#183; 그동안 답할 문장을 생각해 보세요</div>`;
+   await new Promise(r=>setTimeout(r,cd*1000));
+   if(run!==convRun)return;
+   live.innerHTML='<div class="tr">준비 중&#8230;</div>';
+  }
+  const msgs=[{role:'system',content:buildConvSys(first)},...convHist,{role:'user',content:first?'start':txt}];
+  let full='';
+  if(settings.geminiKey){
+   const c=new AbortController();convCtrl=c;const to=setTimeout(()=>c.abort(),30000);
+   const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(settings.geminiKey)}`,{
+    method:'POST',signal:c.signal,headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({systemInstruction:{parts:[{text:buildConvSys(first)}]},
+     contents:convHist.concat([{role:'user',parts:[{text:first?'start':txt}]}]).map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),
+     generationConfig:{temperature:.8,maxOutputTokens:400}})});
+   clearTimeout(to);
+   if(!r.ok)throw new Error('gemini HTTP '+r.status);
+   const d=await r.json();
+   full=(((((d.candidates||[])[0]||{}).content||{}).parts||[])[0]||{}).text||'';
+  }else{
+   convCtrl=new AbortController();
+   full=await pollChat(msgs,420,buf=>{
+    if(run!==convRun)return;
+    const p=convParse(buf);
+    if(p.reply||p.fix)live.innerHTML=fixHTML(p.fix)+`<div class="rw" dir="auto">${escHTML(p.reply)}</div>`;
+   },convCtrl.signal);
+  }
+  if(run!==convRun)return;
+  const p=convParse(full);
+  if(!p.reply)throw new Error('no-reply');
+  live.innerHTML=fixHTML(p.fix)+`<div class="rw" dir="auto">${escHTML(p.reply)}</div>`
+   +(p.pron&&/[가-힣]/.test(p.pron)?`<div class="pron">발음 &#183; ${escHTML(p.pron)}</div>`:'')
+   +(p.ko?`<div class="tr">${escHTML(p.ko)}</div>`:'')
+   +`<div class="rw-act"><button class="mini-btn b-cspeak" title="발음 듣기">&#128266;</button><button class="mini-btn b-ccopy" title="복사">&#10064;</button></div>`;
+   live.querySelector('.b-cspeak').onclick=()=>speak(p.reply,studyLang);
+  live.querySelector('.b-ccopy').onclick=()=>copyText(p.reply);
+  convHist.push({role:'user',content:first?'start':txt},{role:'assistant',content:full});
+  $('convStatus').textContent='';
+ }catch(e){
+  if(run!==convRun)return;
+  live.innerHTML=`<div class="tr">서버가 잠시 바빠서 답을 못 받았어요 <button class="btn-ghost sm" id="cRetry" style="margin-left:6px">다시 시도</button></div>`;
+  const rb=live.querySelector('#cRetry');
+  if(rb)rb.onclick=()=>{live.remove();convSend(first,txt)};
+  return;
+ }finally{
+  if(run===convRun){convBusy=false;$('convSend').disabled=false}
+ }
+}
+$('convStart').addEventListener('click',()=>{
+ convHist=[];convRun++;
+ if(convCtrl){try{convCtrl.abort()}catch(e){}}
+ $('convLog').innerHTML='';
+ $('convSetup').hidden=true;$('convRoom').hidden=false;
+ $('convScene').textContent=convScen.e;$('convSceneName').textContent=convScen.t;
+ convSend(true);
+});
+$('convQuit').addEventListener('click',()=>{
+ convRun++;if(convCtrl){try{convCtrl.abort()}catch(e){}}
+ $('convRoom').hidden=true;$('convSetup').hidden=false;$('convStatus').textContent='';
+});
+$('convSend').addEventListener('click',()=>convSend(false));
+$('convIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();convSend(false)}});
+convRenderOpts();
+
+/* 첫 실행 화면 — ?m= 로 특정 모드를 바로 열 수 있어요 */
+go(new URLSearchParams(location.search).get('m')||'home');
+
+/* ─────────────── 데모 모드 ─────────────── */
+const demo=new URLSearchParams(location.search).get('demo');
+if(demo==='mock'){
+ go('translate');
+ els.input.value='내일 저녁에 시간 있어? 같이 밥 먹자!';
+ els.count.textContent=els.input.value.length+'자';els.chip.innerHTML=langChip('ko');
+ renderTranslation({trans:"Are you free tomorrow evening? Let's grab dinner together!",src:'ko',dict:[{pos:'noun',terms:['dinner','evening meal'],entry:[]}],translit:'아 유 프리 투모로우 이브닝? 렛츠 그랩 디너 투게더!'});
+ const T=(text,pron,note,words)=>({text,pron,note,words:words.map(x=>({w:x[0],m:x[1],p:x[2]}))});
+ renderTones({
+  formal:T('Would you happen to be available tomorrow evening? It would be a pleasure to have dinner with you.','우드 유 해픈 투 비 어베일러블 투모로우 이브닝? 잇 우드 비 어 플레저 투 해브 디너 윗 유.','존댓말+정중한 의사 표현, 공식 자리용',[['available','이용 가능한','어베일러블'],['evening','저녁','이브닝'],['pleasure','기쁨','플레저']]),
+  business:T("Would you be available for dinner tomorrow evening? I'd like to set up a time to meet.",'우드 유 비 어베일러블 포 디너 투모로우 이브닝? 아이드 라이크 투 셋 업 어 타임 투 밋.','일정 조율 표현, 업무 자리용',[['available','가능한','어베일러블'],['set up','정하다','셋 업'],['meet','만나다','밋']]),
+  standard:T('Are you free tomorrow evening? Let us have dinner together.','아 유 프리 투모로우 이브닝? 렛 어스 해브 디너 투게더.','중립적인 표준 문어체',[['free','한가한','프리'],['tomorrow','내일','투모로우'],['evening','저녁','이브닝']]),
+  native:T('You free tomorrow night? Wanna grab a bite together?','유 프리 투모로우 나잇? 와나 그랩 어 바이트 투게더?','현지인이 흔히 쓰는 관용 표현',[['wanna','~하고 싶다','와나'],['grab','얻다','그랩'],['a bite','가볍게 먹기','어 바이트']]),
+  casual:T("Free tomorrow night? Let's grab some food together!",'프리 투모로우 나잇? 렛츠 그랩 썸 푸드 투게더!','반말처럼 편한 사이의 말투',[['free','한가한','프리'],['grab','먹다','그랩'],['food','음식','푸드']]),
+  slang:T("Down for dinner tmrw night? Let's link up, it's gonna be lit 🔥",'다운 포 디너 투모로 나잇? 렛츠 링크 업, 잇츠 거나 비 릿 🔥','메신저 슬랭. down for=찬성, link up=만나자',[['down for','찬성이야','다운 포'],['tmrw','내일의 축약','투모로'],['link up','만나자','링크 업'],['lit','짱이다','릿']])
+ },'아 유 프리 투모로우 이브닝? 렛츠 그랩 디너 투게더!');
+ els.gloss.hidden=false;
+ els.glossList.innerHTML=[['내일','tomorrow','투모로우'],['저녁에','in the evening','인 디 이브닝'],['시간','time','타임'],['있어','have','해브'],['같이','together','투게더'],['밥','a meal','어 밀'],['먹자',"let's eat",'렛츠 잇']].map(p=>glossChipHTML(p[0],{m:p[1],p:p[2]},false)).join('');
+}else if(demo==='1'){
+ go('translate');
+ els.input.value='내일 저녁에 시간 있어? 같이 밥 먹자!';
+ doTranslate();
+}
+</script>
+<script>
+/* PWA: HTTPS(또는 localhost) 호스팅에서만 서비스워커 등록 — file://로 열면 자동 생략 */
+if(('serviceWorker' in navigator) && (location.protocol==='https:' || location.hostname==='localhost')){
+  addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+}
+</script>
+</body>
+</html>

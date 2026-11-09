@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "뉘앙스 — 번역 · 단어공부 · 회화",
+  "short_name": "뉘앙스.",
+  "description": "번역, 단어공부, 회화까지. 외국어를 사용하면서 배우는 무료 학습 도구.",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0E1118",
+  "theme_color": "#0E1118",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
